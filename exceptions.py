@@ -9,3 +9,6 @@ class PlayerNotFound(Exception):
 
 class GameFull(Exception):
     pass
+
+class AlreadyRevealed(Exception):
+    pass

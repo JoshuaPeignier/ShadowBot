@@ -32,7 +32,7 @@ def delete(player,emoji):
 		raise exceptions.PlayerNotFound
 
 def players():
-	return game_joined[]
+	return game_joined
 
 def players_list_str():
 	if nb_players() == 0:
@@ -40,8 +40,22 @@ def players_list_str():
 	else:
 		res = ''
 		for i in range(0,nb_players()):
-			res=res+'Joueur '+str(i+1)+' : '+game_joined[i][0].name+' '+str(game_joined[i][1])+'\n'
+			res=res+game_joined[i][0].name+' '+str(game_joined[i][1])+'\n'
 		return res
+
+def composition():
+	if nb_players() == 4:
+		return "2 Hunters, 2 Shadows"
+	elif nb_players() == 5:
+		return "2 Hunters, 2 Shadows, 1 Neutre"
+	elif nb_players() == 6:
+		return "2 Hunters, 2 Shadows, 2 Neutres"
+	elif nb_players() == 7:
+		return "2 Hunters, 2 Shadows, 3 Neutres"
+	elif nb_players() == 8:
+		return "3 Hunters, 3 Shadows, 2 Neutres"
+	else:
+		return "Pas assez de joueurs."
 
 def joined():
 	return game_joined
