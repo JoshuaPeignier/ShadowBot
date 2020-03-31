@@ -32,6 +32,9 @@ class Player:
 	def getUser(self):
 		return self.discorduser
 
+	def getMention(self):
+		return self.discorduser.mention
+
 	def getName(self):
 		return self.discorduser.name
 

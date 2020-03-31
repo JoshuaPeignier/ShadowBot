@@ -131,6 +131,9 @@ class Game:
 	def getChannel(self,i):
 		return self.playerlist[i].getChannel()
 
+	def getMention(self,i):
+		return self.playerlist[i].getMention()
+
 	## Small actions
 	def d4(self):
 		return random.randint(1,4)
