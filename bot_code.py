@@ -290,12 +290,12 @@ class ShadowClient(discord.Client):
 			await self.game.print_target_reactions(self.last_choice_message,False,2)
 
 		# TODO : delete the following choices, which are only there for debugging purposes
-		await self.last_choice_message.add_reaction('\U0001F7E9')
-		await self.last_choice_message.add_reaction('\U0001F7EA')
-		await self.last_choice_message.add_reaction('\u2B1C')
-		await self.last_choice_message.add_reaction('\u2B1B')
-		await self.last_choice_message.add_reaction('\U0001F7EB')
-		await self.last_choice_message.add_reaction('\U0001F7E7')
+		#await self.last_choice_message.add_reaction('\U0001F7E9')
+		#await self.last_choice_message.add_reaction('\U0001F7EA')
+		#await self.last_choice_message.add_reaction('\u2B1C')
+		#await self.last_choice_message.add_reaction('\u2B1B')
+		#await self.last_choice_message.add_reaction('\U0001F7EB')
+		#await self.last_choice_message.add_reaction('\U0001F7E7')
 
 		# If he's Emi and revealed, suggest two reactions for the corresponding moves possible
 		if self.game.getCharacter(self.game.turn_of) == character_list.emi and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
