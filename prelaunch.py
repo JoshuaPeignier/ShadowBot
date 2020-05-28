@@ -4,12 +4,17 @@ import exceptions
 game_joined=[]
 game_created=False
 game_launched=False
+creator=None
 
 def nb_players():
 	return len(game_joined)
 
 def add(player,emoji):
 	global game_joined
+	if game_launched:
+		raise exceptions.GameRunning
+	if emoji == '\u27A1' or emoji == '\u274C' or emoji == '\U0001F525' or emoji == '\u2611' or emoji == '\U0001F197' or emoji == '\U0001F6AB' or emoji == '\U0001F3B2' or emoji == '\U0001FA78' or emoji == '\U0001F5E1' or emoji == '\U0001F7E9' or emoji == '\U0001F7EA' or emoji == '\u2B1C' or emoji == '\u2B1B' or emoji == '\U0001F7EB' or emoji == '\U0001F7E7' or emoji == '\U0001F3F9' or emoji == '\U0001FA93' or emoji == '\U0001F52B' or emoji == '\U0001F5E1' or emoji == '\u2694' or emoji == '\U0001F528' or emoji == '\U0001F9AF' or emoji == '\U0001F9BA' or emoji == '\U0001F9ED' or emoji == '\U0001F48D' or emoji == '\u271D' or emoji == '\U0001F4FF' or emoji == '\U0001F4CD' or emoji == '\U0001F5FF' or emoji == '\U0001F6E1' or emoji == '\U0001F489' or emoji == '\U0001F6D1':
+		raise exceptions.EmojiReserved
 	for i in range(0,nb_players()):
 		# Comment this block to allow a same player to connect multiple times
 		#if game_joined[i][0]==player:
@@ -22,6 +27,8 @@ def add(player,emoji):
 
 def delete(player,emoji):
 	global game_joined
+	if game_launched:
+		raise exceptions.GameRunning
 	found = False
 	for i in range(0,nb_players()):
 		if (game_joined[i][0]==player) and (game_joined[i][1]==emoji):
@@ -40,7 +47,7 @@ def players_list_str():
 	else:
 		res = ''
 		for i in range(0,nb_players()):
-			res=res+game_joined[i][0].name+' '+str(game_joined[i][1])+'\n'
+			res=res+game_joined[i][0].display_name+' '+str(game_joined[i][1])+'\n'
 		return res
 
 def composition():
@@ -66,8 +73,10 @@ def created():
 def launched():
 	return game_launched
 
-def create():
+def create(author):
 	global game_created
+	global creator
+	creator=author
 	game_created=True
 
 def launch():
@@ -78,6 +87,8 @@ def stop():
 	global game_created
 	global game_launched
 	global game_joined
+	global creator
 	game_joined = []
 	game_created=False
 	game_launched=False
+	creator=None

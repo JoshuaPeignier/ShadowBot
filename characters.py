@@ -7,6 +7,7 @@ class Character:
 	abilityText=None
 	uniqueUse=False
 	choice=False
+
 	## Initialisation of the character
 	def __init__(self,name_of,health,team,color,winconText,abText,uniqueUse,choice):
 		self.name = name_of
@@ -53,13 +54,13 @@ class Character:
 	def uniqueAbility(self):
 		return self.uniqueUse
 
+	def hasRealAbility(self):
+		return self.choice
+
 	def info(self):
 		power=""
 		if self.choice:
 			power = "**Pouvoir** : "
 		else:
 			power = "**Particularité** : "
-		unique=""
-		if self.uniqueUse:
-			unique=" (Utilisation unique)"
-		return "**Nom** : "+self.name+"\n**Points de vie** : "+str(self.totalHealth)+"\n**Camp** : "+self.faction+' '+self.color+"\n**Condition de victoire** : "+self.wincon+"\n"+power+self.abilityText+unique+"\n"
+		return "**Nom** : "+self.name+"\n**Points de vie** : "+str(self.totalHealth)+"\n**Camp** : "+self.faction+' '+self.color+"\n**Condition de victoire** : "+self.wincon+"\n"+power+self.abilityText+"\n"

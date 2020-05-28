@@ -23,18 +23,35 @@ class Location:
 	def getName(self):
 		return self.name
 
+	def getNameArticle(self):
+		if self.name == "Antre de l'Ermite":
+			return "l'Antre de l'Ermite"
+		elif self.name == "Porte de l'Outremonde":
+			return "la Porte de l'Outremonde"
+		elif self.name == "Monastère":
+			return "le Monastère"
+		elif self.name == "Cimetière":
+			return "le Cimetière"
+		elif self.name == "Forêt Hantée":
+			return "la Forêt Hantée"
+		elif self.name == "Sanctuaire Ancien":
+			return "le Sanctuaire Ancien"
+
+	def getColor(self):
+		return self.color
+
 	def getNameColor(self):
 		return '**'+self.name+'** '+self.color
 
 	def getInfo(self):
-		return self.info
+		return self.getNameColor()+' : '+self.info
 
-hermit_lair = Location("Antre de l'Ermite",":green_square:","Vous pouvez piocher une carte vision.")
-otherworld_door = Location("Porte de l'Outremonde",":purple_square:","Vous pouvez piocher une carte de la couleur de votre choix.")
-monastery = Location("Monastère",":white_large_square:","Vous pouvez piocher une carte Lumière.")
-graveyard = Location("Cimetière",":black_large_square:","Vous pouvez piocher une carte Ténèbres.")
-haunted_forest = Location("Forêt Hantée",":brown_square:","Vous pouvez infliger 2 Blessures au joueur de votre choix, ou soigner une de vos Blessures.")
-ancient_sanctuary = Location("Sanctuaire Ancien",":orange_square:","Vous pouvez voler une carte équipement au joueur de votre choix.")
+hermit_lair = Location("Antre de l'Ermite","\U0001F7E9","Vous pouvez piocher une carte vision.")
+otherworld_door = Location("Porte de l'Outremonde","\U0001F7EA","Vous pouvez piocher une carte de la couleur de votre choix.")
+monastery = Location("Monastère","\u2B1C","Vous pouvez piocher une carte Lumière.")
+graveyard = Location("Cimetière","\u2B1B","Vous pouvez piocher une carte Ténèbres.")
+haunted_forest = Location("Forêt Hantée","\U0001F7EB","Vous pouvez infliger 2 Blessures au joueur de votre choix, ou soigner une de vos Blessures.")
+ancient_sanctuary = Location("Sanctuaire Ancien","\U0001F7E7","Vous pouvez voler une carte équipement au joueur de votre choix.")
 
 location_list = [hermit_lair, otherworld_door, monastery, graveyard, haunted_forest, ancient_sanctuary]
 
