@@ -464,7 +464,10 @@ class Game:
 			# Searching for Daniel
 			for i in range(0,self.nb_players()):
 				if self.playerlist[i].getCharacter() == character_list.daniel:
-					ret_str = ret_str+self.playerlist[i].reveals()+'\n'
+					try:
+						ret_str = ret_str+self.playerlist[i].reveals()+'\n'
+					except exceptions.AlreadyRevealed:
+						print('lol')
 
 			# Other effects
 			for k in range(0,len(self.just_died)):
