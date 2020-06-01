@@ -67,5 +67,5 @@ hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,link,marth]
 
 shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora]
 
-#neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan]
-neutral_list=[daniel]
+neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan]
+#neutral_list=[daniel]
