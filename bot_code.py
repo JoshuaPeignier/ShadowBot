@@ -25,6 +25,7 @@ class ShadowClient(discord.Client):
 	buffer_message=[]
 	main_channel=None
 	quit_try=False
+	debug = False
 	turn_phase = -1 # -2 : when got a 7 or the compass and blocked in the movement ; -1: AIDS turn and Default value ; 0: beginning, before moving phase ; 1: Moving and applying the effect ; 2: Attacking ; 3: Ending the turn
 
 	#@client.event
@@ -149,6 +150,8 @@ class ShadowClient(discord.Client):
 				else:
 					self.game.future_after_pillage = future
 					await self.pillage()
+		else:
+			await self.victory_and_deaths(future)
 
 	async def pillage(self):
 		if self.game.waiting_for_pillage == []:
@@ -290,12 +293,13 @@ class ShadowClient(discord.Client):
 			await self.game.print_target_reactions(self.last_choice_message,False,2)
 
 		# TODO : delete the following choices, which are only there for debugging purposes
-		#await self.last_choice_message.add_reaction('\U0001F7E9')
-		#await self.last_choice_message.add_reaction('\U0001F7EA')
-		#await self.last_choice_message.add_reaction('\u2B1C')
-		#await self.last_choice_message.add_reaction('\u2B1B')
-		#await self.last_choice_message.add_reaction('\U0001F7EB')
-		#await self.last_choice_message.add_reaction('\U0001F7E7')
+		if self.debug:
+			await self.last_choice_message.add_reaction('\U0001F7E9')
+			await self.last_choice_message.add_reaction('\U0001F7EA')
+			await self.last_choice_message.add_reaction('\u2B1C')
+			await self.last_choice_message.add_reaction('\u2B1B')
+			await self.last_choice_message.add_reaction('\U0001F7EB')
+			await self.last_choice_message.add_reaction('\U0001F7E7')
 
 		# If he's Emi and revealed, suggest two reactions for the corresponding moves possible
 		if self.game.getCharacter(self.game.turn_of) == character_list.emi and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
@@ -2666,6 +2670,20 @@ class ShadowClient(discord.Client):
 				self.main_channel = message.channel
 				await self.delete_buffer()
 				await message.channel.send(message.author.mention+' crée une partie de Shadow Hunters.'+'\n**Rejoignez la partie en ajoutant un emoji en réaction à ce message** ; il servira à vous identifier.\nUne fois prêts, **'+message.author.display_name+' doit taper '+self.prefix+'start pour démarrer**.\n\n')
+
+		# Someones wants to enter debug mode
+		elif message.content == self.prefix+'debug':
+			# If no game is created, then error
+			if self.debug:
+				self.debug = False
+				current_message = await message.channel.send('Debug-mode désactivé')
+				await self.add_message_to_buffer(message)
+				await self.add_message_to_buffer(current_message)
+			else:
+				self.debug = True
+				current_message = await message.channel.send('Debug-mode activé')
+				await self.add_message_to_buffer(message)
+				await self.add_message_to_buffer(current_message)
 
 		# Someones wants to know a command
 		elif message.content == self.prefix+'help':
