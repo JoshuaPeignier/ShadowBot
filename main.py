@@ -1509,8 +1509,9 @@ class Game:
 			self.just_died = self.just_died+[pid2]
 		else:
 			# Triggering the counterattack if possible
-			if pid2 == self.werewolf_id and self.isAbilityAvailable(pid2) and self.isRevealed(pid2) and self.isAlive(pid2) and (source == 0 or source == 13):
+			if pid2 == self.werewolf_id and self.isAbilityAvailable(pid2) and self.isRevealed(pid2) and (source == 0 or source == 13):
 				self.counterattack_available = True
+
 		return ret_string+temp
 			
 

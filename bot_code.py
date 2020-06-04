@@ -92,7 +92,7 @@ class ShadowClient(discord.Client):
 			if m.channel == self.main_channel:
 				try:
 					await m.delete()
-				except NotFound:
+				except discord.NotFound:
 					print('Tried to delete a message which was already deleted.\n')
 		self.buffer_message = []
 
