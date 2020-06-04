@@ -1812,7 +1812,7 @@ class ShadowClient(discord.Client):
 
 
 		# When a player wants to attack another
-		elif reaction.message.content.startswith('Veux-tu contre-attaquer')  and (user == self.game.getUser(self.game.turn_of)) and (self.turn_phase == 2):
+		elif reaction.message.content.startswith('Veux-tu contre-attaquer')  and (user == self.game.getUser(self.game.werewolf_id)) and (self.turn_phase == 2):
 			# Clicks on the cross
 			if reaction.emoji == '\u274C':
 				await self.last_choice_message.delete()
@@ -1820,7 +1820,7 @@ class ShadowClient(discord.Client):
 				self.game.counterattack_available = False
 				await self.last_choice_message.delete()
 				self.last_choice_message = None
-				current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' choisit de **ne pas contre-attaquer**.')
+				current_message = await self.main_channel.send(self.game.getName(self.game.werewolf_id)+' '+str(self.game.getEmoji(self.game.werewolf_id))+' choisit de **ne pas contre-attaquer**.')
 				await self.add_message_to_buffer(current_message)
 				await self.turn_post()
 			elif reaction.emoji == '\u2611':

@@ -1356,9 +1356,7 @@ class Game:
 				else:
 					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value)+'** Blessures.\n' 
 					temp = self.playerlist[pid2].damage(new_value)
-				# Triggering the counterattack if possible
-				if pid2 == self.werewolf_id and self.isAbilityAvailable(pid2) and self.isRevealed(pid2):
-					self.counterattack_available = True
+
 			# Werewolf counterattack
 			else:
 				if self.hasGuardianAngel(pid2) or self.hasGregorShield(pid2) or source == 16:
@@ -1509,7 +1507,10 @@ class Game:
 				else:
 					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' a tué **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+'.\n'
 			self.just_died = self.just_died+[pid2]
-
+		else:
+			# Triggering the counterattack if possible
+			if pid2 == self.werewolf_id and self.isAbilityAvailable(pid2) and self.isRevealed(pid2) and self.isAlive(pid2) and (source == 0 or source == 13):
+				self.counterattack_available = True
 		return ret_string+temp
 			
 
