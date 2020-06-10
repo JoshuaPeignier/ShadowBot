@@ -72,10 +72,10 @@ class Game:
 		random.shuffle(self.playerlist)
 
 		sudden_death = False
-		if self.nb_players() > 4:
-			sudden_death_try = random.randint(1,20)
-			if sudden_death_try == 1:
-				sudden_death = True
+		#if self.nb_players() > 4:
+		#	sudden_death_try = random.randint(1,20)
+		#	if sudden_death_try == 1:
+		#		sudden_death = True
 
 
 		## Picking and shuffling the characters

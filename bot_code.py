@@ -2250,7 +2250,9 @@ class ShadowClient(discord.Client):
 				self.last_choice_message = None
 				if self.game.last_drawn == 1:
 					await self.draw_light()
+					self.game.last_drawn = 0
 				elif self.game.last_drawn == 2:
+					self.game.last_drawn = 0
 					await self.draw_darkness()
 
 
@@ -2790,7 +2792,7 @@ class ShadowClient(discord.Client):
 
 				# at this point, pid is the id of the player who typed the message (with priority to the player whose turn it is, if the same user is several players at once)
 
-				if (not self.game.isRevealed(pid)) or (self.game.getSleepTime(self.game.turn_of) != 0) or (not self.game.isAlive(pid)) or (not self.game.isAbilityAvailable(self.game.turn_of)):
+				if (not self.game.isRevealed(pid)) or (self.game.getSleepTime(pid) != 0) or (not self.game.isAlive(pid)) or (not self.game.isAbilityAvailable(pid)):
 					await message.add_reaction('\U0001F6AB')
 
 				# Power of Gregor
