@@ -26,6 +26,7 @@ class ShadowClient(discord.Client):
 	main_channel=None
 	quit_try=False
 	debug = False
+	erasing_messages = False
 	turn_phase = -1 # -2 : when got a 7 or the compass and blocked in the movement ; -1: AIDS turn and Default value ; 0: beginning, before moving phase ; 1: Moving and applying the effect ; 2: Attacking ; 3: Ending the turn
 
 	#@client.event
@@ -88,6 +89,7 @@ class ShadowClient(discord.Client):
 
 	# Deletes the messages in the buffer
 	async def delete_buffer(self):
+		self.erasing_messages = True
 		for m in self.buffer_message:
 			if m.channel == self.main_channel:
 				try:
@@ -95,6 +97,7 @@ class ShadowClient(discord.Client):
 				except discord.NotFound:
 					print('Tried to delete a message which was already deleted.\n')
 		self.buffer_message = []
+		self.erasing_messages = False
 
 	async def victory_message(self):
 		await self.update()
@@ -1038,18 +1041,22 @@ class ShadowClient(discord.Client):
 
 
 		if card == light.spear_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.spear)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
 
 		if card == light.robe_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.robe)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
 
 		if card == light.compass_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.compass)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
 
 		if card == light.ring_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.ring)
 			ret_str = self.game.heal(self.game.turn_of,self.game.turn_of,1,5)
 			current_message = await self.main_channel.send(ret_str)
@@ -1057,14 +1064,17 @@ class ShadowClient(discord.Client):
 			await self.pillage_victory_and_deaths(self.area_effect_post)
 
 		if card == light.amulet_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.amulet)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
 
 		if card == light.cross_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.cross)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
 
 		if card == light.pin_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.pin)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
 
@@ -1222,24 +1232,37 @@ class ShadowClient(discord.Client):
 				await self.game.print_target_reactions(self.last_choice_message,False,0)
 
 		if card == darkness.gunmachine_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.gunmachine)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
+
 		if card == darkness.bow_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.bow)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
+
 		if card == darkness.katana_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.katana)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
+
 		if card == darkness.axe_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.axe)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
+
 		if card == darkness.zweihander_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.zweihander)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
+
 		if card == darkness.mace_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.mace)
 			await self.pillage_victory_and_deaths(self.area_effect_post)
+
 		if card == darkness.aids_card:
+			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.aids)
 			ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,1,9)
 			if ret_str != '':
@@ -3074,4 +3097,7 @@ class ShadowClient(discord.Client):
 
 		# Someone posts anything else
 		else:
-			await self.add_message_to_buffer(message)
+			if self.erasing_messages:
+				await message.delete()
+			else:
+				await self.add_message_to_buffer(message)
