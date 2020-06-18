@@ -139,8 +139,9 @@ class ShadowClient(discord.Client):
 				for k in range(0,len(self.game.just_died)):
 					j = self.game.just_died[k]
 					pillage_str = self.game.stealInventory(self.game.turn_of,j)
-					ret_message = await self.main_channel.send(pillage_str)
-					await self.add_message_to_buffer(ret_message)
+					if len(pillage_str) > 0:
+						ret_message = await self.main_channel.send(pillage_str)
+						await self.add_message_to_buffer(ret_message)
 				await self.victory_and_deaths(future)
 			else:
 				for k in range(0,len(self.game.just_died)):
