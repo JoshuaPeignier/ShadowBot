@@ -2978,6 +2978,7 @@ class ShadowClient(discord.Client):
 							ret_str = self.game.heal(self.game.turn_of,self.game.turn_of,14,0)
 							current_message = await message.channel.send(ret_str)
 							await self.add_message_to_buffer(current_message)
+							self.game.using_chocolate_bar = False
 							await self.area_effect_post()
 
 						if self.game.using_lay_on_hands and (self.game.isHunter(self.game.turn_of)  or (self.game.getCharacter(self.game.turn_of) == character_list.metamorph)):
@@ -2986,6 +2987,7 @@ class ShadowClient(discord.Client):
 							ret_str = self.game.heal(self.game.turn_of,self.game.turn_of,14,0)
 							current_message = await message.channel.send(ret_str)
 							await self.add_message_to_buffer(current_message)
+							self.game.using_lay_on_hands = False
 							await self.area_effect_post()
 
 						if self.game.using_devilish_ritual and self.game.isShadow(self.game.turn_of):
@@ -2994,6 +2996,7 @@ class ShadowClient(discord.Client):
 							ret_str = self.game.heal(self.game.turn_of,self.game.turn_of,14,0)
 							current_message = await message.channel.send(ret_str)
 							await self.add_message_to_buffer(current_message)
+							self.game.using_devilish_ritual = False
 							await self.area_effect_post()
 						if self.turn_phase == 0:
 							await self.last_choice_message.delete()
