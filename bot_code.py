@@ -1678,9 +1678,11 @@ class ShadowClient(discord.Client):
 					self.last_choice_message = None
 
 					self.game.item_to_give = items.emoji_to_item_dictionary.get(reaction.emoji,None)
+
 					ret_str = self.game.giveItem(j,self.game.turn_of,self.game.item_to_give)
+					# Erreur ici quand on donne le SIDA, apparemment. Rien ne se passe.
 					if self.game.item_to_give == items.aids:
-						ret_str = ret_str + '\n'+self.game.damage(j,self.game.player_receiving_item,1,9)
+						ret_str = ret_str + '\n'+self.game.damage(j,self.game.turn_of,1,9)
 
 					pChan = self.game.getChannel(j)
 					await pChan.send('Tu as choisi de donner '+self.game.item_to_give.getArticleNameEmoji()+'.')
