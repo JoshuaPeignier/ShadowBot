@@ -9,20 +9,22 @@ fuka = characters.Character("Fu-Ka",12,"Hunter",":blue_circle:","Tous les person
 emi = characters.Character("Emi",12,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Téléportation (Conditionné)* | Au début de votre tour, vous pouvez choisir de vous déplacer en lançant les dés ou bien vous déplacer directement sur un des lieux adjacents à la vôtre.",False,True)
 ellen = characters.Character("Ellen",10,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Exorcisme (Activable, Utilisation unique)* | Au début de votre tour, choisissez un joueur ; son pouvoir disparaît jusqu'à la fin de la partie.",True,True)
 erik = characters.Character("Erik",10,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Tranquilité (Activable, Utilisation unique)* | Au début de votre tour et au début de votre prochain tour, vous pouvez choisir entre vous soigner 3 Blessures, ou soigner 2 Blessures à au plus 3 Personnages de votre choix sur votre secteur.",True,True)
-link = characters.Character("Link",14,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Blocage (Passif)* | Lorsque vous subissez une attaque, lancez les deux dés et calculez le résultat comme pour un jet d'attaque. Si le résultat de votre jet est strictement supérieur au résultat du jet de l'attaque adverse, vous ne subissez aucune Blessure.",False,True)
+lothaire = characters.Character("Lothaire",14,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Blocage (Passif)* | Lorsque vous subissez une attaque, lancez les deux dés et calculez le résultat comme pour un jet d'attaque. Si le résultat de votre jet est strictement supérieur au résultat du jet de l'attaque adverse, vous ne subissez aucune Blessure.",False,True)
 marth = characters.Character("Marth",12,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Perforation (Passif)* | Lorsque vous attaquez un joueur situé sur un lieu adjacent au vôtre et ne faites pas 0, vous lui infligez une Blessure supplémentaire.",False,True)
+link = characters.Character("Link",12,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Bombe glitchée (Conditionné)* | Après avoir lancé les dés pour vous déplacer, si le résultat ne vous satisfait pas, vous pouvez vous infliger 2 Blessures pour vous déplacer où vous le souhaitez.",False,True)
 
 # Shadows
 werewolf = characters.Character("Loup-Garou",14,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Contre-Attaque (Conditionné) * | Après avoir subi l'attaque d'un joueur, vous pouvez contre-attaquer immédiatement (sans vos équipements).",False,True)
 lich = characters.Character("Liche",14,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Nécromancie (Activable, Utilisation unique)* | A la fin de votre tour, rejouez autant de fois qu'il y a de personnages morts.",True,True)
 vampire = characters.Character("Vampire",13,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Morsure (Passif)* | Si vous attaquez un joueur et lui infligez des Blessures, soignez une de vos Blessures.",False,True)
 valkyrie = characters.Character("Valkyrie",13,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Chant de Guerre (Passif)* | Lorsque vous attaquez, lancez uniquement le dé 4 pour déterminer le montant de dégâts infligés. Par rapport à un jet normal, cela vous empêche de faire 0 et augmente vos chances de faire 3 ou 4.",False,True)
-varimathras = characters.Character("Varimathras",13,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Sommeil (Activable, Utilisation unique)* | A la fin de votre tour, choisissez un joueur. Celui-ci passe ses deux prochains tours ; l'effet s'interrompt si la cible subit des Blessures.",True,True)
+varimathras = characters.Character("Varimathras",14,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Sommeil (Activable, Utilisation unique)* | A la fin de votre tour, choisissez un joueur. Celui-ci passe ses deux prochains tours ; l'effet s'interrompt si la cible subit des Blessures.",True,True)
 metamorph = characters.Character("Métamorphe",11,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Imitation* | Lorsqu'on vous donne une carte vision, vous pouvez (sans avoir à révéler votre carte de Personnage) choisir de mentir ou de dire la vérité.",False,False)
 mummy = characters.Character("Momie",11,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Voile Mortel (Conditionné)* | Au début de votre tour, vous pouvez infliger 3 Blessures à un joueur de votre choix situé sur la Porte de l'Outremonde.",False,True)
 mograine = characters.Character("Mograine",11,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Enchaînement (Conditionné)* | Lorsque vous attaquez, vous pouvez choisir deux cibles et faire un seul jet. La deuxième cible désignée subit la moitié des dégâts de l'attaque.",False,True)
 ganondorf = characters.Character("Ganondorf",14,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*DORIYAH! (Passif)* | Si vous ne faites pas 0 lors d'une attaque, vous infligez une Blessure supplémentaire par Equipement de Ténèbres en votre possession (le total de dégâts bonus obtenus par vos équipements ET votre pouvoir ne peut pas dépasser 3).",False,True)
 majora = characters.Character("Majora",11,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Impact lunaire (Activable, Utilisation unique)* | Au début de votre tour, infligez 2 Blessures à tous les joueurs situés sur un autre secteur que le vôtre",True,True)
+charles = characters.Character("Charles",13,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Rage (Passif)* | Si vos attaques infligent des Blessures, elles infligent 1/2/3 Blessures supplémentaires si vous avez subi au moins 5/9/12 Blessures.",False,True)
 
 # Neutral
 daniel = characters.Character("Daniel",13,"Neutre",":yellow_circle:","Être le premier à mourir OU être en vie quand tous les personnages Shadows sont morts.","*Désespoir* | dès qu'un autre personnage meurt, votre identité est automatiquement révélée.",False,False)
@@ -42,8 +44,9 @@ char_dictionary = {
 "Emi": emi,
 "Ellen": ellen,
 "Erik": erik,
-"Link": link,
+"Lothaire": lothaire,
 "Marth": marth,
+"Link": link,
 "Loup-Garou": werewolf,
 "Liche": lich,
 "Vampire": vampire,
@@ -54,6 +57,7 @@ char_dictionary = {
 "Mograine": mograine,
 "Ganondorf": ganondorf,
 "Majora": majora,
+"Charles": charles,
 "Daniel": daniel,
 "Catherine": catherine,
 "Allie": allie,
@@ -63,9 +67,8 @@ char_dictionary = {
 "Bryan": bryan
 }
 
-hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,link,marth]
+hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
 
-shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora]
+shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
 
 neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan]
-#neutral_list=[daniel]

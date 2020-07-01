@@ -328,8 +328,32 @@ class ShadowClient(discord.Client):
 								    +' a fait '+str(dice_result)+'.')
 		await self.add_message_to_buffer(current_message)
 
+		# If not a 7, and player is Link, revealed and power is available
+		if dice_result != 7 and self.game.getCharacter(self.game.turn_of) == character_list.link and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
+
+			self.game.link_destination_1 = self.game.location_of_result(dice_result)
+
+			# Getting the list of possible locations
+			location_string = ''
+			for i in range(0,6):
+				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
+					location_string = location_string+'> '+self.game.gamemap[i].getName()+' '+str(self.game.gamemap[i].getColor())
+					if self.game.gamemap[i] != self.game.link_destination_1:
+						location_string = location_string+' (coût : 2 Blessures)'
+					location_string = location_string+'\n'
+
+			# Sending the message and reactions
+			self.turn_phase = -2
+			wound_value = '**2** Blessures'
+			if self.game.hasItem(self.game.turn_of,items.robe):
+				wound_value = '**1** Blessure'
+			self.last_choice_message = await self.main_channel.send('Tu peux te déplacer vers '+self.game.link_destination_1.getNameArticle()+' '+self.game.link_destination_1.getColor()+' ou subir '+wound_value+' pour te rendre ailleurs. Où souhaites-tu aller ?\n'+location_string)
+			for i in range(0,6):
+				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
+					await self.last_choice_message.add_reaction(self.game.gamemap[i].getColor())
+
 		# If not a 7, player moves directly
-		if dice_result != 7:
+		elif dice_result != 7:
 			new_loc_str = self.game.move_player_to(self.game.turn_of,dice_result)
 			await self.moving_finish(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' se déplace vers **'+new_loc_str+'**.')
 
@@ -363,6 +387,34 @@ class ShadowClient(discord.Client):
 		await self.add_message_to_buffer(current_message)
 
 		self.turn_phase = -2
+
+
+		# If not a 7, and player is Link, revealed and power is available
+		if dice_result_1 != 7 and dice_result_2 != 7 and self.game.getCharacter(self.game.turn_of) == character_list.link and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
+
+			self.game.link_destination_1 = self.game.location_of_result(dice_result_1)
+			self.game.link_destination_2 = self.game.location_of_result(dice_result_2)
+
+			# Getting the list of possible locations
+			location_string = ''
+			for i in range(0,6):
+				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
+					location_string = location_string+'> '+self.game.gamemap[i].getName()+' '+str(self.game.gamemap[i].getColor())
+					if self.game.gamemap[i] != self.game.link_destination_1 and self.game.gamemap[i] != self.game.link_destination_2:
+						location_string = location_string+' (coût : 2 Blessures)'
+					location_string = location_string+'\n'
+
+			# Sending the message and reactions
+			self.turn_phase = -2
+			wound_value = '**2** Blessures'
+			if self.game.hasItem(self.game.turn_of,items.robe):
+				wound_value = '**1** Blessure'
+			self.last_choice_message = await self.main_channel.send('Tu peux te déplacer vers '+self.game.link_destination_1.getNameArticle()+' '+self.game.link_destination_1.getColor()+' ou '+self.game.link_destination_2.getNameArticle()+' '+self.game.link_destination_2.getColor()+' ou subir '+wound_value+' pour te rendre ailleurs. Où souhaites-tu aller ?\n'+location_string)
+			for i in range(0,6):
+				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
+					await self.last_choice_message.add_reaction(self.game.gamemap[i].getColor())
+
+
 		# If not a 7, player moves directly
 		if dice_result_1 != 7 and dice_result_2 != 7:
 			loc_1 = self.game.location_of_result(dice_result_1)
@@ -400,7 +452,7 @@ class ShadowClient(discord.Client):
 		await self.add_message_to_buffer(current_message)
 		current_message = await self.main_channel.send('\_\_\_')
 		await self.add_message_to_buffer(current_message)
-		await self.new_zone()
+		await self.pillage_victory_and_deaths(self.new_zone)
 
 	# Updates the aura, and suggest applying the zone effect
 	async def new_zone(self):
@@ -674,8 +726,8 @@ class ShadowClient(discord.Client):
 		former_health = self.game.playerlist[target_id].wounds
 		vampire_heal_str = ''
 
-		# Link can try to block
-		if self.game.getCharacter(target_id) == character_list.link and self.game.isRevealed(target_id) and self.game.isAbilityAvailable(target_id):
+		# Lothaire can try to block
+		if self.game.getCharacter(target_id) == character_list.lothaire and self.game.isRevealed(target_id) and self.game.isAbilityAvailable(target_id):
 			block_value = abs(self.game.d6()-self.game.d4())	
 			current_message = await self.main_channel.send(self.game.getName(target_id)+' '+str(self.game.getEmoji(target_id))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
@@ -714,8 +766,8 @@ class ShadowClient(discord.Client):
 		await self.add_message_to_buffer(current_message)
 
 
-		# Link can try to block
-		if self.game.getCharacter(self.game.mograine_target_1) == character_list.link and self.game.isRevealed(self.game.mograine_target_1) and self.game.isAbilityAvailable(self.game.mograine_target_1):
+		# Lothaire can try to block
+		if self.game.getCharacter(self.game.mograine_target_1) == character_list.lothaire and self.game.isRevealed(self.game.mograine_target_1) and self.game.isAbilityAvailable(self.game.mograine_target_1):
 			block_value = abs(self.game.d6()-self.game.d4())	
 			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_1)+' '+str(self.game.getEmoji(self.game.mograine_target_1))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
@@ -731,8 +783,8 @@ class ShadowClient(discord.Client):
 		await self.add_message_to_buffer(current_message)
 
 
-		# Link can try to block
-		if self.game.getCharacter(self.game.mograine_target_2) == character_list.link and self.game.isRevealed(self.game.mograine_target_2) and self.game.isAbilityAvailable(self.game.mograine_target_2):
+		# Lothaire can try to block
+		if self.game.getCharacter(self.game.mograine_target_2) == character_list.lothaire and self.game.isRevealed(self.game.mograine_target_2) and self.game.isAbilityAvailable(self.game.mograine_target_2):
 			block_value = abs(self.game.d6()-self.game.d4())	
 			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_2)+' '+str(self.game.getEmoji(self.game.mograine_target_2))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
@@ -784,8 +836,8 @@ class ShadowClient(discord.Client):
 				vampire_heal_str = ''
 
 
-				# Link can try to block
-				if self.game.getCharacter(i) == character_list.link and self.game.isRevealed(i) and self.game.isAbilityAvailable(i):
+				# Lothaire can try to block
+				if self.game.getCharacter(i) == character_list.lothaire and self.game.isRevealed(i) and self.game.isAbilityAvailable(i):
 					block_value = abs(self.game.d6()-self.game.d4())	
 					current_message = await self.main_channel.send(self.game.getName(i)+' '+str(self.game.getEmoji(i))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
@@ -1510,6 +1562,29 @@ class ShadowClient(discord.Client):
 				new_loc_str = self.game.move_player_directly(self.game.turn_of,self.game.gamemap[location_id])
 				await self.moving_finish(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' se déplace vers **'+new_loc_str+'**.')
 
+		# When Link is moving
+		elif reaction.message.content.startswith('Tu peux te déplacer vers')  and (user == self.game.getUser(self.game.turn_of)) and (self.turn_phase == -2):
+			location_id = -1
+			# Looks for the location if in the game
+			for i in range(0,6):
+				if self.game.gamemap[i].getColor() == reaction.emoji and self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
+					location_id = i
+
+			# Moves the player
+			if location_id != -1:
+				await self.last_choice_message.delete()
+				self.last_choice_message = None
+
+				if self.game.gamemap[location_id] == self.game.link_destination_1 or self.game.gamemap[location_id] == self.game.link_destination_2:
+					damage_str = self.game.damage(self.game.turn_of,self.game.turn_of,2,17)
+					current_message = await self.main_channel.send(damage_str)
+					await self.add_message_to_buffer(current_message)
+
+				new_loc_str = self.game.move_player_directly(self.game.turn_of,self.game.gamemap[location_id])
+
+				self.game.link_destination_1 = None
+				self.game.link_destination_2 = None
+				await self.moving_finish(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' se déplace vers **'+new_loc_str+'**.')
 
 		# When a player is moving and uses the compass
 		elif reaction.message.content.startswith('Où veux-tu aller ? Voici les choix possibles ')  and (user == self.game.getUser(self.game.turn_of)) and (self.turn_phase == -2):
@@ -1858,8 +1933,8 @@ class ShadowClient(discord.Client):
 				current_message = await self.main_channel.send(self.game.getName(self.game.werewolf_id)+' '+str(self.game.getEmoji(self.game.werewolf_id))+' a fait '+str(dice_value)+'.')
 				await self.add_message_to_buffer(current_message)
 
-				# Link can try to block
-				if self.game.getCharacter(self.game.turn_of) == character_list.link and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
+				# Lothaire can try to block
+				if self.game.getCharacter(self.game.turn_of) == character_list.lothaire and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
 					block_value = abs(self.game.d6()-self.game.d4())	
 					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
@@ -2664,8 +2739,8 @@ class ShadowClient(discord.Client):
 
 		# Someones wants to know all the characters which can be used in the game
 		elif message.content == self.prefix+'charlist':
-			current_message = await message.channel.send('Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Marth\n'
-						  +'Shadows :red_circle: : Ganondorf, Majora, Métamorphe, Mograine, Momie, Liche, Loup-Garou, Valkyrie, Vampire, Varimathras\n'
+			current_message = await message.channel.send('Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Lothaire, Marth\n'
+						  +'Shadows :red_circle: : Charles, Ganondorf, Majora, Métamorphe, Mograine, Momie, Liche, Loup-Garou, Valkyrie, Vampire, Varimathras\n'
 						  +'Neutres :yellow_circle: : Allie, Agnès, Bob, Bryan, Catherine, Daniel, Neo\n')
 			await self.add_message_to_buffer(message)
 			await self.add_message_to_buffer(current_message)

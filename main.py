@@ -56,6 +56,8 @@ class Game:
 	erik_target_1 = None
 	erik_target_2 = None
 	erik_target_3 = None
+	link_destination_1 = None
+	link_destination_2 = None
 	bob_draw = False
 	last_drawn = 0 # 0 for nothing or for vision ; 1 for light ; 2 for darkness
 	future_after_pillage = None
@@ -1161,6 +1163,16 @@ class Game:
 						bonus = bonus+1
 					if self.getCharacter(self.turn_of) == character_list.marth and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and tipper_condition:
 							bonus = bonus+1
+					if self.getCharacter(self.turn_of) == character_list.charles and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of):
+						berserker_bonus = 0
+						berserker_wounds = self.playerlist[self.game.turn_of].wounds
+						if berserker_wounds >= 5 and berserker_wounds < 9:
+							berserker_bonus = 1
+						elif berserker_wounds >= 9 and berserker_wounds < 12:
+							berserker_bonus = 2
+						elif berserker_wounds == 12:
+							berserker_bonus = 2
+						bonus = bonus + berserker_bonus
 					if self.getCharacter(self.turn_of) == character_list.ganondorf and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of):
 						bonus = bonus + len(self.darknessInventory(self.turn_of))
 						if bonus > 3:
@@ -1175,8 +1187,8 @@ class Game:
 					else:
 						if bonus != 0:
 							ret_str = ret_str + ' ('+plus+str(bonus)+')'
-						# Link can try to block
-						if self.getCharacter(j) == character_list.link and self.isRevealed(j) and self.isAbilityAvailable(j):
+						# Lothaire can try to block
+						if self.getCharacter(j) == character_list.lothaire and self.isRevealed(j) and self.isAbilityAvailable(j):
 							ret_str = ret_str + ' (Blocable)'
 					ret_str = ret_str+'\n'
 
@@ -1301,12 +1313,13 @@ class Game:
 	# 8 Banana peel
 	# 9 AIDS
 	# 10 Vision
-	# 11 Blocked by Link
+	# 11 Blocked by Lothaire
 	# 12 Majora
 	# 13 Mograine's 2nd attack
-	# 14 Mograine's 2nd attack blocked by Link
+	# 14 Mograine's 2nd attack blocked by Lothaire
 	# 15 Werewolf's counterattack
-	# 16 Werewolf's counterattack blocked by Link
+	# 16 Werewolf's counterattack blocked by Lothaire
+	# 17 Link damaging himself to move
 	def damage(self,pid1,pid2,value,source):
 		ret_string = ''
 		temp = ''
@@ -1371,12 +1384,12 @@ class Game:
 		# If the player is under the Haunted Forest effect
 		if source == 1:
 			if self.hasItem(pid2,items.pin) or self.hasGregorShield(pid2):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
+				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' hante **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' hante **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
+				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' hante **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Lightning
@@ -1491,6 +1504,15 @@ class Game:
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
 				ret_string = 'Une pluie de roches lunaires s\'abat sur **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
+				temp = self.playerlist[pid2].damage(value)
+
+		# Link
+		if source == 17:
+			if self.hasItem(pid2,items.robe):
+				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				temp = self.playerlist[pid2].damage(value-1)
+			else:
+				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Awakening from the slumber
