@@ -446,7 +446,7 @@ class Game:
 			hunters_side = (self.daniel_allegiance == 'Hunter' and all_shadows_dead)
 			shadows_side = (self.daniel_allegiance == 'Shadow' and all_hunters_dead)
 			second_condition = self.first_blood and self.playerlist[i].isAlive() and (hunters_side or shadows_side)
-			thir_condition = self.first_blood and self.playerlist[i].isAlive() all_shadows_dead
+			thir_condition = self.first_blood and self.playerlist[i].isAlive() and all_shadows_dead
 			return first_condition or third_condition
 
 		elif self.playerlist[i].getCharacter() == character_list.catherine:
