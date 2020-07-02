@@ -58,6 +58,7 @@ class Game:
 	erik_target_3 = None
 	link_destination_1 = None
 	link_destination_2 = None
+	daniel_allegiance = None
 	bob_draw = False
 	last_drawn = 0 # 0 for nothing or for vision ; 1 for light ; 2 for darkness
 	future_after_pillage = None
@@ -437,7 +438,16 @@ class Game:
 			for j in range(0,self.nb_players()):
 				if self.playerlist[j].isShadow() and self.playerlist[j].isAlive():
 					all_shadows_dead = False
-			return ((not self.first_blood) and (not self.playerlist[i].isAlive())) or (self.first_blood and self.playerlist[i].isAlive() and all_shadows_dead)
+			all_hunters_dead = True
+			for j in range(0,self.nb_players()):
+				if self.playerlist[j].isHunter() and self.playerlist[j].isAlive():
+					all_hunters_dead = False
+			first_condition = (not self.first_blood) and (not self.playerlist[i].isAlive())
+			hunters_side = (self.daniel_allegiance == 'Hunter' and all_shadows_dead)
+			shadows_side = (self.daniel_allegiance == 'Shadow' and all_hunters_dead)
+			second_condition = self.first_blood and self.playerlist[i].isAlive() and (hunters_side or shadows_side)
+			thir_condition = self.first_blood and self.playerlist[i].isAlive() all_shadows_dead
+			return first_condition or third_condition
 
 		elif self.playerlist[i].getCharacter() == character_list.catherine:
 			nb_alive = 0
@@ -1165,13 +1175,13 @@ class Game:
 							bonus = bonus+1
 					if self.getCharacter(self.turn_of) == character_list.charles and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of):
 						berserker_bonus = 0
-						berserker_wounds = self.playerlist[self.game.turn_of].wounds
+						berserker_wounds = self.playerlist[self.turn_of].wounds
 						if berserker_wounds >= 5 and berserker_wounds < 9:
 							berserker_bonus = 1
 						elif berserker_wounds >= 9 and berserker_wounds < 12:
 							berserker_bonus = 2
 						elif berserker_wounds == 12:
-							berserker_bonus = 2
+							berserker_bonus = 3
 						bonus = bonus + berserker_bonus
 					if self.getCharacter(self.turn_of) == character_list.ganondorf and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of):
 						bonus = bonus + len(self.darknessInventory(self.turn_of))
@@ -1239,7 +1249,7 @@ class Game:
 	# 6 Vision
 	# 7 Vampire
 	# 8 Catherine
-	# 9 Erik
+	# 9 Erik or Ellen
 	def heal(self,pid1,pid2,value,source):
 		ret_string = ''
 
@@ -1288,7 +1298,7 @@ class Game:
 			ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' se soigne **'+str(value)+'** Blessure.\n' 
 			self.playerlist[pid2].heal(value)
 
-		# Erik
+		# Erik or Ellen
 		if source == 9:
 			if pid1 == pid2:
 				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' se soigne **'+str(value)+'** Blessures.\n' 
@@ -1351,6 +1361,16 @@ class Game:
 				new_value = new_value-1
 			if self.getCharacter(self.turn_of) == character_list.marth and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and tipper_condition and value != 0:
 				new_value = new_value+1
+			if self.getCharacter(self.turn_of) == character_list.charles and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and value != 0:
+				berserker_bonus = 0
+				berserker_wounds = self.playerlist[self.turn_of].wounds
+				if berserker_wounds >= 5 and berserker_wounds < 9:
+					berserker_bonus = 1
+				elif berserker_wounds >= 9 and berserker_wounds < 12:
+					berserker_bonus = 2
+				elif berserker_wounds == 12:
+					berserker_bonus = 3
+				new_value = new_value + berserker_bonus
 			if self.getCharacter(self.turn_of) == character_list.ganondorf and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and value != 0:
 				new_value = new_value + len(self.darknessInventory(self.turn_of))
 				if new_value-value > 3:

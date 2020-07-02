@@ -267,7 +267,7 @@ class ShadowClient(discord.Client):
 			ret_str = ret_str+'> \U0001F3B2 : **jet de déplacement**\n'
 
 		# If the player has a power which it can trigger on its own in the beginning of the turn
-		if self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of) and (self.game.getCharacter(self.game.turn_of) == character_list.georges or self.game.getCharacter(self.game.turn_of) == character_list.franklin or self.game.getCharacter(self.game.turn_of) == character_list.fuka or self.game.getCharacter(self.game.turn_of) == character_list.ellen or self.game.getCharacter(self.game.turn_of) == character_list.erik  or self.game.getCharacter(self.game.turn_of) == character_list.majora):
+		if self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of) and (self.game.getCharacter(self.game.turn_of) == character_list.georges or self.game.getCharacter(self.game.turn_of) == character_list.franklin or self.game.getCharacter(self.game.turn_of) == character_list.fuka or self.game.getCharacter(self.game.turn_of) == character_list.ellen or self.game.getCharacter(self.game.turn_of) == character_list.erik  or self.game.getCharacter(self.game.turn_of) == character_list.majora or self.game.getCharacter(self.game.turn_of) == character_list.agnes):
 			ret_str = ret_str+'> Taper **'+self.prefix+'pow** : utiliser ton pouvoir (puis te déplacer)'
 
 		# If he's Emi and revealed, suggest two reactions for the corresponding moves possible
@@ -339,7 +339,10 @@ class ShadowClient(discord.Client):
 				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
 					location_string = location_string+'> '+self.game.gamemap[i].getName()+' '+str(self.game.gamemap[i].getColor())
 					if self.game.gamemap[i] != self.game.link_destination_1:
-						location_string = location_string+' (coût : 2 Blessures)'
+						cost = '(2 Blessures)'
+						if self.game.hasItem(self.game.turn_of,items.robe):
+							cost = '(1 Blessure)'
+						location_string = location_string+' '+cost
 					location_string = location_string+'\n'
 
 			# Sending the message and reactions
@@ -401,7 +404,10 @@ class ShadowClient(discord.Client):
 				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
 					location_string = location_string+'> '+self.game.gamemap[i].getName()+' '+str(self.game.gamemap[i].getColor())
 					if self.game.gamemap[i] != self.game.link_destination_1 and self.game.gamemap[i] != self.game.link_destination_2:
-						location_string = location_string+' (coût : 2 Blessures)'
+						cost = '(2 Blessures)'
+						if self.game.hasItem(self.game.turn_of,items.robe):
+							cost = '(1 Blessure)'
+						location_string = location_string+' '+cost
 					location_string = location_string+'\n'
 
 			# Sending the message and reactions
@@ -416,7 +422,7 @@ class ShadowClient(discord.Client):
 
 
 		# If not a 7, player moves directly
-		if dice_result_1 != 7 and dice_result_2 != 7:
+		elif dice_result_1 != 7 and dice_result_2 != 7:
 			loc_1 = self.game.location_of_result(dice_result_1)
 			loc_2 = self.game.location_of_result(dice_result_2)
 
@@ -1575,7 +1581,7 @@ class ShadowClient(discord.Client):
 				await self.last_choice_message.delete()
 				self.last_choice_message = None
 
-				if self.game.gamemap[location_id] == self.game.link_destination_1 or self.game.gamemap[location_id] == self.game.link_destination_2:
+				if self.game.gamemap[location_id] != self.game.link_destination_1 and self.game.gamemap[location_id] != self.game.link_destination_2:
 					damage_str = self.game.damage(self.game.turn_of,self.game.turn_of,2,17)
 					current_message = await self.main_channel.send(damage_str)
 					await self.add_message_to_buffer(current_message)
@@ -2483,10 +2489,23 @@ class ShadowClient(discord.Client):
 				if target_found:
 					await self.last_choice_message.delete()
 					self.last_choice_message = None
+
+					if self.game.isShadow(j) and self.game.playerlist[j].getCharacter() != character_list.metamorph:
+						if (not self.game.isRevealed(j)):
+							ret_str = self.game.playerlist[j].reveals()
+							current_message = await self.main_channel.send(ret_str)
+							await self.add_message_to_buffer(current_message)
+						heal_str = self.game.heal(self.game.turn_of,self.game.turn_of,3,9)
+						current_message = await self.main_channel.send(heal_str)
+						await self.add_message_to_buffer(current_message)
+
 					current_message = await self.main_channel.send('**'+self.game.getName(j)+'** '+str(self.game.getEmoji(j))+' perd son pouvoir jusqu\'à la fin de la partie.\n')
 					await self.add_message_to_buffer(current_message)
 					self.game.consumeAbility(self.game.turn_of)
 					self.game.consumeAbility(j)
+
+
+					
 					await self.moving_pre()
 
 		# When Erik uses his power
@@ -2933,14 +2952,6 @@ class ShadowClient(discord.Client):
 						await self.last_choice_message.add_reaction('\u2611')
 						await self.last_choice_message.add_reaction('\u274C')
 
-				# Power of Agnes
-				elif self.game.getCharacter(pid) == character_list.agnes:
-					self.game.agnes_switched = True
-					self.game.consumeAbility(pid)
-					current_message = await message.channel.send(self.game.getName(pid)+' '+str(self.game.getEmoji(pid))+' change sa condition de victoire, et **gagnera si '+self.game.getName((pid+1)%self.game.nb_players())+'** '+str(self.game.getEmoji((pid+1)%self.game.nb_players()))+' **gagne**.')
-					await self.add_message_to_buffer(current_message)
-					await self.update()
-
 				# Power of Allie
 				elif self.game.getCharacter(pid) == character_list.allie:
 					self.game.consumeAbility(pid)
@@ -2948,6 +2959,17 @@ class ShadowClient(discord.Client):
 					current_message = await message.channel.send(heal_str)
 					await self.add_message_to_buffer(current_message)
 					await self.update()
+
+				# Power of Agnes
+				elif self.game.getCharacter(pid) == character_list.agnes:
+					if self.turn_phase != 0 or pid != self.game.turn_of:
+						await message.add_reaction('\U0001F6AB')
+					else:
+						self.game.agnes_switched = True
+						self.game.consumeAbility(pid)
+						current_message = await message.channel.send(self.game.getName(pid)+' '+str(self.game.getEmoji(pid))+' change sa condition de victoire, et **gagnera si '+self.game.getName((pid+1)%self.game.nb_players())+'** '+str(self.game.getEmoji((pid+1)%self.game.nb_players()))+' **gagne**.')
+						await self.add_message_to_buffer(current_message)
+						await self.update()
 
 				# Power of Georges
 				elif self.game.getCharacter(pid) == character_list.georges:
