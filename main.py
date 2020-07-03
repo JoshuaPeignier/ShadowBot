@@ -27,6 +27,7 @@ class Game:
 	neo_target = None # Used in the victory condition of Neo
 	neo_revenge_activated = None # While false, Neo only needs to protect the player who plays before her.
 	neo_id = None # id of the player playing Neo if it exists
+	daniel_id = None
 
 	# Cards piles
 	light_pile = light.light_pool.copy()
@@ -116,6 +117,8 @@ class Game:
 				self.neo_id = i
 			if self.char_pool[i] == character_list.werewolf:
 				self.werewolf_id = i
+			if self.char_pool[i] == character_list.daniel:
+				self.daniel_id = i
 		self.char_pool=[]
 
 		if sudden_death:
@@ -182,6 +185,13 @@ class Game:
 				res=res+'> '+'Personnage : '+self.playerlist[i].getCharNameColor()+'\n'
 			if self.playerlist[i].getCharacter() == character_list.neo and self.neo_revenge_activated and self.isAlive(i):
 				res = res+'> Cible : '+self.playerlist[self.neo_target].getName()+' '+str(self.playerlist[self.neo_target].getEmoji())+'\n'
+			if self.playerlist[i].getCharacter() == character_list.daniel and self.daniel_allegiance != None and self.isAlive(i):
+				team = ''
+				if self.daniel_allegiance == 'Hunter':
+					team = 'Hunters :blue_circle:'
+				elif self.daniel_allegiance == 'Shadow':
+					team = 'Shadows :red_circle:'
+				res = res+'> Victoire : avec les '+team+'\n'
 			if self.playerlist[i].getCharacter() == character_list.agnes and self.isRevealed(i):
 				if self.agnes_switched:
 					res = res+'> Victoire : avec '+self.playerlist[(i+1)%self.nb_players()].getName()+' '+str(self.playerlist[(i+1)%self.nb_players()].getEmoji())+'\n'
@@ -447,7 +457,7 @@ class Game:
 			shadows_side = (self.daniel_allegiance == 'Shadow' and all_hunters_dead)
 			second_condition = self.first_blood and self.playerlist[i].isAlive() and (hunters_side or shadows_side)
 			third_condition = self.first_blood and self.playerlist[i].isAlive() and all_shadows_dead
-			return first_condition or third_condition
+			return first_condition or second_condition
 
 		elif self.playerlist[i].getCharacter() == character_list.catherine:
 			nb_alive = 0
@@ -474,9 +484,30 @@ class Game:
 			self.updateAura()
 
 			# Searching for Daniel
-			for i in range(0,self.nb_players()):
-				if self.playerlist[i].getCharacter() == character_list.daniel and not self.isRevealed(i):
-					ret_str = ret_str+self.playerlist[i].reveals()+'\n'
+			if self.daniel_id != None:
+				if self.playerlist[self.daniel_id].getCharacter() == character_list.daniel and not self.isRevealed(self.daniel_id):
+					ret_str = ret_str+self.playerlist[self.daniel_id].reveals()+'\n'
+
+				# Searching if at least one Shadow or one Hunter is dead
+				one_shadow_dead = False
+				for j in range(0,self.nb_players()):
+					if self.playerlist[j].isShadow() and not self.playerlist[j].isAlive():
+						one_shadow_dead = True
+				one_hunter_dead = False
+				for j in range(0,self.nb_players()):
+					if self.playerlist[j].isHunter() and not self.playerlist[j].isAlive():
+						one_hunter_dead = True
+
+				# If Daniel has not chosen a team yet, then we decide accordingly to the deaths
+				if self.daniel_allegiance == None:
+					if one_hunter_dead and not one_shadow_dead:
+						self.daniel_allegiance = 'Hunter'
+						ret_str = ret_str+self.getName(self.daniel_id)+' '+str(self.getEmoji(self.daniel_id))+' joue désormais **avec les Hunters** :blue_circle:'+'\n'
+					elif one_shadow_dead and not one_hunter_dead:
+						self.daniel_allegiance = 'Shadow'
+						ret_str = ret_str+self.getName(self.daniel_id)+' '+str(self.getEmoji(self.daniel_id))+' joue désormais **avec les Shadows** :red_circle:'+'\n'
+					else:
+						self.daniel_allegiance = 'Choice'
 
 			# Other effects
 			for k in range(0,len(self.just_died)):

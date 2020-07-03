@@ -27,6 +27,7 @@ class ShadowClient(discord.Client):
 	quit_try=False
 	debug = False
 	erasing_messages = False
+	future_stored = None
 	turn_phase = -1 # -2 : when got a 7 or the compass and blocked in the movement ; -1: AIDS turn and Default value ; 0: beginning, before moving phase ; 1: Moving and applying the effect ; 2: Attacking ; 3: Ending the turn
 
 	#@client.event
@@ -125,8 +126,17 @@ class ShadowClient(discord.Client):
 				ret_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(ret_message)
 
+			if self.game.daniel_allegiance == 'Choice':
+				ret_message = await self.main_channel.send(self.game.getName(self.game.daniel_id)+' '+str(self.game.getEmoji(self.game.daniel_id))+' doit choisir de jouer avec les Hunters :blue_circle: ou les Shadows :red_circle:')
+				await self.add_message_to_buffer(ret_message)			
+				self.last_choice_message = await self.main_channel.send('Avec qui souhaites-tu jouer ?')
+				await self.last_choice_message.add_reaction('\U0001F535')
+				await self.last_choice_message.add_reaction('\U0001F534')
+
+				self.future_stored = future
+
 			# If player is alive, proceed to attack phase
-			if self.game.isAlive(self.game.turn_of):
+			elif self.game.isAlive(self.game.turn_of):
 				await future()	
 			# Else end the turn
 			else:
@@ -2615,6 +2625,36 @@ class ShadowClient(discord.Client):
 				await self.delete_buffer()
 				await self.next_turn()
 
+		# When Daniel chooses his team
+		elif reaction.message.content.startswith('Avec qui souhaites-tu jouer ?')  and (user == self.game.getUser(self.game.daniel_id)):
+
+			if reaction.emoji == '\U0001F535':
+				await self.last_choice_message.delete()
+				self.last_choice_message = None
+				self.game.daniel_allegiance = 'Hunter'
+				ret_msg = await self.main_channel.send(self.game.getName(self.game.daniel_id)+' '+str(self.game.getEmoji(self.game.daniel_id))+' joue désormais **avec les Hunters** :blue_circle:'+'\n')
+				await self.add_message_to_buffer(ret_msg)
+	
+				# If player is alive, proceed to attack phase
+				if self.game.isAlive(self.game.turn_of):
+					await self.future_stored()
+				# Else end the turn
+				else:
+					await self.turn_post()
+
+			elif reaction.emoji == '\U0001F534':
+				await self.last_choice_message.delete()
+				self.last_choice_message = None
+				self.game.daniel_allegiance = 'Shadow'
+				ret_msg = await self.main_channel.send(self.game.getName(self.game.daniel_id)+' '+str(self.game.getEmoji(self.game.daniel_id))+' joue désormais **avec les Shadows** :red_circle:'+'\n')
+				await self.add_message_to_buffer(ret_msg)
+	
+				# If player is alive, proceed to attack phase
+				if self.game.isAlive(self.game.turn_of):
+					await self.future_stored()
+				# Else end the turn
+				else:
+					await self.turn_post()
 
 		# When a player is ending his turn
 		elif reaction.message.content.startswith('C\'est la fin de ton tour')  and (user == self.game.getUser(self.game.turn_of)) and (self.turn_phase == 3) and (reaction.emoji == '\u27A1'):

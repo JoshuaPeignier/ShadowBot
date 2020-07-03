@@ -74,3 +74,4 @@ shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine
 #shadow_list=[werewolf,metamorph]
 
 neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan]
+#neutral_list=[daniel,allie]
