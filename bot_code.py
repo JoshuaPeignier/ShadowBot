@@ -2394,7 +2394,7 @@ class ShadowClient(discord.Client):
 					await self.last_choice_message.delete()
 					self.last_choice_message = None
 					self.game.setSleepTime(j,2)
-					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' endort **'+self.game.getName(j)+'** '+str(self.game.getEmoji(j))+' pour **2** tours. Tout dégât subi par '+self.game.getName(j)+' '+str(self.game.getEmoji(j))+' mettra fin à l\'effet.')
+					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' endort **'+self.game.getName(j)+'** '+str(self.game.getEmoji(j))+' pour **2** tours. Si '+self.game.getName(j)+' '+str(self.game.getEmoji(j))+' subit au moins 2 Blessures en une fois, l\'effet prendra fin. '+self.game.getName(j)+' '+str(self.game.getEmoji(j))+' subira 4 Blessures en se réveillant si les 2 tours passent et que '+self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' est encore en vie.')
 					await self.add_message_to_buffer(current_message)
 					self.game.consumeAbility(self.game.turn_of)
 					await self.turn_post()
@@ -2666,7 +2666,18 @@ class ShadowClient(discord.Client):
 				if (self.game.getSleepTime(self.game.turn_of) == 0):
 					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' **se réveille**.\n')
 					await self.add_message_to_buffer(current_message)
-			await self.next_turn()
+					if self.game.isAlive(self.game.varimathras_id):
+						ret_str = self.game.damage(self.game.varimathras_id,self.game.turn_of,4,18)
+						if ret_str != '':
+							current_message = await self.main_channel.send(ret_str)
+							await self.add_message_to_buffer(current_message)
+						await self.pillage_victory_and_deaths(self.next_turn)
+					else:
+						await self.next_turn()
+				else:
+					await self.next_turn()
+			else:
+				await self.next_turn()
 
 
 	#@client.event
@@ -3059,7 +3070,7 @@ class ShadowClient(discord.Client):
 						self.last_choice_message = None
 						target_str = self.game.print_targets(False,0)
 						target_str = target_str + '> Annuler \u274C'
-						self.last_choice_message = await message.channel.send('Tu peux supprimer le pouvoir d\'un autre joueur. Qui choisis-tu ?\n'+target_str)
+						self.last_choice_message = await message.channel.send('Tu peux supprimer le pouvoir d\'un autre joueur. De plus, si c\'est un Shadow autre que Métamorphe, il devra se révéler et tu pourras te soigner **3** Blessures. Qui choisis-tu ?\n'+target_str)
 						await self.game.print_target_reactions(self.last_choice_message,False,0)
 						await self.last_choice_message.add_reaction('\u274C')
 

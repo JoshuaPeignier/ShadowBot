@@ -28,6 +28,7 @@ class Game:
 	neo_revenge_activated = None # While false, Neo only needs to protect the player who plays before her.
 	neo_id = None # id of the player playing Neo if it exists
 	daniel_id = None
+	varimathras_id = None
 
 	# Cards piles
 	light_pile = light.light_pool.copy()
@@ -119,6 +120,8 @@ class Game:
 				self.werewolf_id = i
 			if self.char_pool[i] == character_list.daniel:
 				self.daniel_id = i
+			if self.char_pool[i] == character_list.varimathras:
+				self.varimathras_id = i
 		self.char_pool=[]
 
 		if sudden_death:
@@ -1361,6 +1364,7 @@ class Game:
 	# 15 Werewolf's counterattack
 	# 16 Werewolf's counterattack blocked by Lothaire
 	# 17 Link damaging himself to move
+	# 18 Slumber ends with damage
 	def damage(self,pid1,pid2,value,source):
 		ret_string = ''
 		temp = ''
@@ -1566,9 +1570,20 @@ class Game:
 				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
+		# Slumber ends with damage
+		if source == 18:
+			if self.hasGregorShield(pid2):
+				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **0** Blessure (Absorbé : '+str(value)+').\n' 
+			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
+				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				temp = self.playerlist[pid2].damage(value-1)
+			else:
+				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value)+'** Blessures.\n' 
+				temp = self.playerlist[pid2].damage(value)
+
 		# Awakening from the slumber
 		new_HP = self.playerlist[pid2].wounds
-		if self.isAlive(pid2) and self.getSleepTime(pid2) > 0 and new_HP > original_HP:
+		if self.isAlive(pid2) and self.getSleepTime(pid2) > 0 and new_HP > (original_HP+1):
 			self.setSleepTime(pid2,0)
 			temp = temp+self.getName(pid2)+' '+str(self.getEmoji(pid2))+' **se réveille**.'
 
