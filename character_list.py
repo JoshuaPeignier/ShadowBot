@@ -70,8 +70,8 @@ char_dictionary = {
 hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
 #hunter_list=[ellen,ellen]
 
-#shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
-shadow_list=[varimathras,ganondorf]
+shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
+#shadow_list=[varimathras,ganondorf]
 
 neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan]
 #neutral_list=[daniel,allie]
