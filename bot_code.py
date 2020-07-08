@@ -751,6 +751,15 @@ class ShadowClient(discord.Client):
 				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,11)
 			else:
 				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0)
+		# Lothaire II can try to block
+		elif self.game.getCharacter(target_id) == character_list.lothaire2 and self.game.isRevealed(target_id) and self.game.isAbilityAvailable(target_id):
+			block_value = abs(self.game.d6()-self.game.d4())	
+			current_message = await self.main_channel.send(self.game.getName(target_id)+' '+str(self.game.getEmoji(target_id))+' a fait '+str(block_value)+'.')
+			await self.add_message_to_buffer(current_message)
+			if (block_value + dice_value) >= 6 and dice_value > 0:
+				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,11)
+			else:
+				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0)
 		else:
 			damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0)
 
@@ -791,6 +800,15 @@ class ShadowClient(discord.Client):
 				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,11)
 			else:
 				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0)
+		# Lothaire II can try to block
+		elif self.game.getCharacter(self.game.mograine_target_1) == character_list.lothaire2 and self.game.isRevealed(self.game.mograine_target_1) and self.game.isAbilityAvailable(self.game.mograine_target_1):
+			block_value = abs(self.game.d6()-self.game.d4())	
+			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_1)+' '+str(self.game.getEmoji(self.game.mograine_target_1))+' a fait '+str(block_value)+'.')
+			await self.add_message_to_buffer(current_message)
+			if block_value + dice_value >= 6 and dice_value > 0:
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,11)
+			else:
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0)
 		else:
 			damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0)
 
@@ -805,6 +823,15 @@ class ShadowClient(discord.Client):
 			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_2)+' '+str(self.game.getEmoji(self.game.mograine_target_2))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
 			if block_value > dice_value and dice_value > 0:
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,14)
+			else:
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13)
+		# Lothaire II can try to block
+		elif self.game.getCharacter(self.game.mograine_target_2) == character_list.lothaire2 and self.game.isRevealed(self.game.mograine_target_2) and self.game.isAbilityAvailable(self.game.mograine_target_2):
+			block_value = abs(self.game.d6()-self.game.d4())	
+			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_2)+' '+str(self.game.getEmoji(self.game.mograine_target_2))+' a fait '+str(block_value)+'.')
+			await self.add_message_to_buffer(current_message)
+			if block_value + dice_value >= 6 and dice_value > 0:
 				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,14)
 			else:
 				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13)
@@ -858,6 +885,15 @@ class ShadowClient(discord.Client):
 					current_message = await self.main_channel.send(self.game.getName(i)+' '+str(self.game.getEmoji(i))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
 					if block_value > dice_value and dice_value > 0:
+						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11)
+					else:
+						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0)
+				# Lothaire can try to block
+				elif self.game.getCharacter(i) == character_list.lothaire2 and self.game.isRevealed(i) and self.game.isAbilityAvailable(i):
+					block_value = abs(self.game.d6()-self.game.d4())	
+					current_message = await self.main_channel.send(self.game.getName(i)+' '+str(self.game.getEmoji(i))+' a fait '+str(block_value)+'.')
+					await self.add_message_to_buffer(current_message)
+					if block_value + dice_value >= 6 and dice_value > 0:
 						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11)
 					else:
 						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0)
@@ -1955,6 +1991,15 @@ class ShadowClient(discord.Client):
 					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
 					if block_value > dice_value and dice_value > 0:
+						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,16)
+					else:
+						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15)
+				# Lothaire II can try to block
+				elif self.game.getCharacter(self.game.turn_of) == character_list.lothaire2 and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
+					block_value = abs(self.game.d6()-self.game.d4())	
+					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' a fait '+str(block_value)+'.')
+					await self.add_message_to_buffer(current_message)
+					if block_value + dice_value >= 6 and dice_value > 0:
 						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,16)
 					else:
 						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15)
