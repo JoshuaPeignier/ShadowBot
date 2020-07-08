@@ -122,6 +122,11 @@ class Game:
 				self.daniel_id = i
 			if self.char_pool[i] == character_list.varimathras:
 				self.varimathras_id = i
+			if self.char_pool[i] == character_list.lothaire:
+				rand_int = random.randint(1,2)
+				if rand_int == 2:
+				self.char_pool[i] = character_list.lothaire2
+
 		self.char_pool=[]
 
 		if sudden_death:

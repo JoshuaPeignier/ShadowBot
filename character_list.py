@@ -46,6 +46,7 @@ char_dictionary = {
 "Ellen": ellen,
 "Erik": erik,
 "Lothaire": lothaire,
+"Lothaire II": lothaire2,
 "Marth": marth,
 "Link": link,
 "Loup-Garou": werewolf,

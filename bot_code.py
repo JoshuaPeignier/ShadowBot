@@ -2854,7 +2854,7 @@ class ShadowClient(discord.Client):
 
 		# Someones wants to know all the characters which can be used in the game
 		elif message.content == self.prefix+'charlist':
-			current_message = await message.channel.send('Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Lothaire, Marth\n'
+			current_message = await message.channel.send('Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Lothaire/Lothaire II, Marth\n'
 						  +'Shadows :red_circle: : Charles, Ganondorf, Majora, Métamorphe, Mograine, Momie, Liche, Loup-Garou, Valkyrie, Vampire, Varimathras\n'
 						  +'Neutres :yellow_circle: : Allie, Agnès, Bob, Bryan, Catherine, Daniel, Neo\n')
 			await self.add_message_to_buffer(message)
