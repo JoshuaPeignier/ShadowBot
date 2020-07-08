@@ -125,7 +125,7 @@ class Game:
 			if self.char_pool[i] == character_list.lothaire:
 				rand_int = random.randint(1,2)
 				if rand_int == 2:
-				self.char_pool[i] = character_list.lothaire2
+					self.char_pool[i] = character_list.lothaire2
 
 		self.char_pool=[]
 
