@@ -8,6 +8,7 @@ import light
 import darkness
 import vision
 import items
+import quotes
 
 class Game:
 
@@ -534,7 +535,7 @@ class Game:
 				if self.playerlist[next_id].getCharacter() == character_list.neo and self.isAlive(next_id):
 					# If the player killed himself or if Neo killed him, then Neo dies
 					if (self.turn_of == j) or (self.turn_of == next_id):
-						ret_str = ret_str+self.damage(next_id,next_id,200,-1)+'\n'
+						ret_str = ret_str+self.damage(next_id,next_id,200,-1,quotes_on)+'\n'
 					# Else
 					else:
 						# Reveal if not already done
@@ -1237,7 +1238,7 @@ class Game:
 						if bonus != 0:
 							ret_str = ret_str + ' ('+plus+str(bonus)+')'
 						# Lothaire can try to block
-						if self.getCharacter(j) == character_list.lothaire and self.isRevealed(j) and self.isAbilityAvailable(j):
+						if (self.getCharacter(j) == character_list.lothaire or self.getCharacter(j) == character_list.lothaire2) and self.isRevealed(j) and self.isAbilityAvailable(j):
 							ret_str = ret_str + ' (Blocable)'
 					ret_str = ret_str+'\n'
 
@@ -1370,7 +1371,7 @@ class Game:
 	# 16 Werewolf's counterattack blocked by Lothaire
 	# 17 Link damaging himself to move
 	# 18 Slumber ends with damage
-	def damage(self,pid1,pid2,value,source):
+	def damage(self,pid1,pid2,value,source,quotes_on):
 		ret_string = ''
 		temp = ''
 		original_HP = self.playerlist[pid2].wounds
@@ -1383,7 +1384,7 @@ class Game:
 
 		# If the player commits suicide ; provided that "value" is big enough
 		if source == -1 and pid1 == pid2:
-			ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' **se suicide**.\n' 
+			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' **se suicide**.\n' 
 			temp = self.playerlist[pid2].damage(value)
 
 		# If the player is simply attacked
@@ -1419,171 +1420,208 @@ class Game:
 			if source == 13 or source == 14:
 				new_value = new_value//2
 
+
+			if new_value >= 6 and quotes_on:
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1)) + ' : ' + quotes.attack_6_plus()
+
+			if new_value >= 3 and new_value <= 5 and quotes_on:
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1)) + ' : ' + quotes.attack_3_to_5()
+
 			# Vanilla attack
 			if source != 15 and source != 16:
 				if self.hasGuardianAngel(pid2) or self.hasGregorShield(pid2) or source == 11 or source == 14:
-					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : '+str(new_value)+').\n' 
+					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : '+str(new_value)+').\n'
+
+					if (source == 11 or source == 14) and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_blocked()
+					
 				elif (self.hasItem(pid2,items.robe) or self.hasAura(pid2) or (pid2 == self.neo_id and pid1 == self.neo_target)) and new_value > 0:
-					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value-1)+'** Blessures (Absorbé : 1).\n' 
+					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value-1)+'** Blessures (Absorbé : 1).\n' 
 					temp = self.playerlist[pid2].damage(new_value-1)
+
+					if new_value >= 1 and new_value <= 2 and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_1_to_2()
+					if new_value == 0 and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_0()
+
 				else:
-					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value)+'** Blessures.\n' 
+					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value)+'** Blessures.\n' 
 					temp = self.playerlist[pid2].damage(new_value)
+
+					if new_value >= 1 and new_value <= 2 and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_1_to_2()
+					if new_value == 0 and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_0()
 
 			# Werewolf counterattack
 			else:
 				if self.hasGuardianAngel(pid2) or self.hasGregorShield(pid2) or source == 16:
-					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' contre-attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : '+str(new_value)+').\n' 
+					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' contre-attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : '+str(new_value)+').\n' 
+
+					if (source == 16) and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_blocked()
+
 				elif (self.hasItem(pid2,items.robe) or self.hasAura(pid2) or (pid2 == self.neo_id and pid1 == self.neo_target)) and new_value > 0:
-					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' contre-attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value-1)+'** Blessures (Absorbé : 1).\n' 
+					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' contre-attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value-1)+'** Blessures (Absorbé : 1).\n' 
 					temp = self.playerlist[pid2].damage(new_value-1)
+
+					if new_value >= 1 and new_value <= 2 and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_1_to_2()
+					if new_value == 0 and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_0()
+
 				else:
-					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' contre-attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value)+'** Blessures.\n' 
+					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' contre-attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value)+'** Blessures.\n' 
 					temp = self.playerlist[pid2].damage(new_value)
+
+					if new_value >= 1 and new_value <= 2 and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_1_to_2()
+					if new_value == 0 and quotes_on:
+						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_0()
 
 		# If the player is under the Haunted Forest effect
 		if source == 1:
 			if self.hasItem(pid2,items.pin) or self.hasGregorShield(pid2):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' hante **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' hante **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' hante **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' hante **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' hante **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' hante **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Lightning
 		if source == 2:
 			if self.hasGregorShield(pid2):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' foudroie **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' foudroie **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' foudroie **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' foudroie **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' foudroie **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' foudroie **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# First Aid/Fu-Ka's Power
 		if source == 3:
-			ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' place **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' à **7** Blessures.\n' 
+			ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' place **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' à **7** Blessures.\n' 
 			self.playerlist[pid2].wounds = 7
 
 		# Vampire Bat
 		if source == 4:
 			if self.hasItem(pid2,items.amulet) or self.hasGregorShield(pid2):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' vampirise **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' vampirise **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' vampirise **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' vampirise **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' vampirise **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' vampirise **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Spider
 		if source == 5:
 			if self.hasItem(pid2,items.amulet) or self.hasGregorShield(pid2):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' infeste **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' infeste **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' infeste **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' infeste **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' infeste **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' infeste **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Dynamite
 		if source == 6:
 			if self.hasItem(pid2,items.amulet) or self.hasGregorShield(pid2):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' explose **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 3).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' explose **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 3).\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' explose **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' explose **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' explose **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' explose **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Voodoo Doll
 		if source == 7:
 			if self.hasGregorShield(pid2):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 3).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 3).\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Banana Peel
 		if source == 8 and pid1 == pid2:
 			if self.hasGregorShield(pid2):
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' glisse et subit **0** Blessure (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' glisse et subit **0** Blessure (Absorbé : 1).\n' 
 			elif self.hasItem(pid2,items.robe):
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' glisse et subit **'+str(value-1)+'** Blessure (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' glisse et subit **'+str(value-1)+'** Blessure (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' glisse et subit **'+str(value)+'** Blessure.\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' glisse et subit **'+str(value)+'** Blessure.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# AIDS
 		if source == 9:
 			if pid1 == pid2:
 				if self.hasGregorShield(pid2):
-					ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' est maudit par l\'Idole \U0001F5FF et subit **0** Blessure (Absorbé : 1).\n' 
+					ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' est maudit par l\'Idole \U0001F5FF et subit **0** Blessure (Absorbé : 1).\n' 
 				elif self.hasItem(pid2,items.robe):
-					ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' est maudit par l\'Idole \U0001F5FF et subit **'+str(value-1)+'** Blessure (Absorbé : 1).\n' 
+					ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' est maudit par l\'Idole \U0001F5FF et subit **'+str(value-1)+'** Blessure (Absorbé : 1).\n' 
 					temp = self.playerlist[pid2].damage(value-1)
 				else:
-					ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' est maudit par l\'Idole \U0001F5FF et subit **'+str(value)+'** Blessure.\n' 
+					ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' est maudit par l\'Idole \U0001F5FF et subit **'+str(value)+'** Blessure.\n' 
 					temp = self.playerlist[pid2].damage(value)
 			else:
 				if self.hasGregorShield(pid2):
-					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' avec l\'Idole \U0001F5FF et lui inflige **0** Blessure (Absorbé : 1).\n'
+					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' avec l\'Idole \U0001F5FF et lui inflige **0** Blessure (Absorbé : 1).\n'
 				elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' avec l\'Idole \U0001F5FF et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' avec l\'Idole \U0001F5FF et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 					temp = self.playerlist[pid2].damage(value-1)
 				else:
-					ret_string = self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' avec l\'Idole \U0001F5FF et lui inflige **'+str(value)+'** Blessures.\n' 
+					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' maudit **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' avec l\'Idole \U0001F5FF et lui inflige **'+str(value)+'** Blessures.\n' 
 					temp = self.playerlist[pid2].damage(value)
 
 		# Vision
 		if source == 10:
 			if self.hasGregorShield(pid2):
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **0** Blessure (Absorbé : '+str(value)+').\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **0** Blessure (Absorbé : '+str(value)+').\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value-1)+'** Blessure (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value-1)+'** Blessure (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value)+'** Blessure.\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value)+'** Blessure.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Majora
 		if source == 12:
 			if self.hasGregorShield(pid2):
-				ret_string = 'Une pluie de roches lunaires s\'abat sur **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
+				ret_string = ret_string + 'Une pluie de roches lunaires s\'abat sur **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **0** Blessure (Absorbé : 2).\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = 'Une pluie de roches lunaires s\'abat sur **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + 'Une pluie de roches lunaires s\'abat sur **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = 'Une pluie de roches lunaires s\'abat sur **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + 'Une pluie de roches lunaires s\'abat sur **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Link
 		if source == 17:
 			if self.hasItem(pid2,items.robe):
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Slumber ends with damage
 		if source == 18:
 			if self.hasGregorShield(pid2):
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **0** Blessure (Absorbé : '+str(value)+').\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **0** Blessure (Absorbé : '+str(value)+').\n' 
 			elif self.hasItem(pid2,items.robe) or (pid2 == self.neo_id and pid1 == self.neo_target):
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Awakening from the slumber

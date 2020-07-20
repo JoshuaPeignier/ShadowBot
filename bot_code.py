@@ -29,6 +29,7 @@ class ShadowClient(discord.Client):
 	erasing_messages = False
 	future_stored = None
 	turn_phase = -1 # -2 : when got a 7 or the compass and blocked in the movement ; -1: AIDS turn and Default value ; 0: beginning, before moving phase ; 1: Moving and applying the effect ; 2: Attacking ; 3: Ending the turn
+	quotes_on = True
 
 	#@client.event
 	async def on_ready(self):
@@ -587,7 +588,7 @@ class ShadowClient(discord.Client):
 			if self.game.haunted_forest_effect == 1:
 				ret_str = self.game.heal(self.game.turn_of,self.game.haunted_forest_victim,1,1)
 			elif self.game.haunted_forest_effect == -1:
-				ret_str = self.game.damage(self.game.turn_of,self.game.haunted_forest_victim,2,1)
+				ret_str = self.game.damage(self.game.turn_of,self.game.haunted_forest_victim,2,1,self.quotes_on)
 
 			if ret_str != '':
 				await self.last_choice_message.delete()
@@ -748,20 +749,20 @@ class ShadowClient(discord.Client):
 			current_message = await self.main_channel.send(self.game.getName(target_id)+' '+str(self.game.getEmoji(target_id))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
 			if block_value > dice_value and dice_value > 0:
-				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,11)
+				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,11,self.quotes_on)
 			else:
-				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0)
+				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0,self.quotes_on)
 		# Lothaire II can try to block
 		elif self.game.getCharacter(target_id) == character_list.lothaire2 and self.game.isRevealed(target_id) and self.game.isAbilityAvailable(target_id):
 			block_value = abs(self.game.d6()-self.game.d4())	
 			current_message = await self.main_channel.send(self.game.getName(target_id)+' '+str(self.game.getEmoji(target_id))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
 			if (block_value + dice_value) >= 6 and dice_value > 0:
-				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,11)
+				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,11,self.quotes_on)
 			else:
-				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0)
+				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0,self.quotes_on)
 		else:
-			damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0)
+			damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0,self.quotes_on)
 
 		# Computing the real damage inflicted
 		new_value = self.game.playerlist[target_id].wounds-former_health
@@ -797,20 +798,20 @@ class ShadowClient(discord.Client):
 			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_1)+' '+str(self.game.getEmoji(self.game.mograine_target_1))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
 			if block_value > dice_value and dice_value > 0:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,11)
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,11,self.quotes_on)
 			else:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0)
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0,self.quotes_on)
 		# Lothaire II can try to block
 		elif self.game.getCharacter(self.game.mograine_target_1) == character_list.lothaire2 and self.game.isRevealed(self.game.mograine_target_1) and self.game.isAbilityAvailable(self.game.mograine_target_1):
 			block_value = abs(self.game.d6()-self.game.d4())	
 			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_1)+' '+str(self.game.getEmoji(self.game.mograine_target_1))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
 			if block_value + dice_value >= 6 and dice_value > 0:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,11)
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,11,self.quotes_on)
 			else:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0)
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0,self.quotes_on)
 		else:
-			damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0)
+			damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0,self.quotes_on)
 
 		# Sending messages
 		current_message = await self.main_channel.send(damage_str)
@@ -823,20 +824,20 @@ class ShadowClient(discord.Client):
 			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_2)+' '+str(self.game.getEmoji(self.game.mograine_target_2))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
 			if block_value > dice_value and dice_value > 0:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,14)
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,14,self.quotes_on)
 			else:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13)
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13,self.quotes_on)
 		# Lothaire II can try to block
 		elif self.game.getCharacter(self.game.mograine_target_2) == character_list.lothaire2 and self.game.isRevealed(self.game.mograine_target_2) and self.game.isAbilityAvailable(self.game.mograine_target_2):
 			block_value = abs(self.game.d6()-self.game.d4())	
 			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_2)+' '+str(self.game.getEmoji(self.game.mograine_target_2))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
 			if block_value + dice_value >= 6 and dice_value > 0:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,14)
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,14,self.quotes_on)
 			else:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13)
+				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13,self.quotes_on)
 		else:
-			damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13)
+			damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13,self.quotes_on)
 
 		# Sending messages
 		current_message = await self.main_channel.send(damage_str)
@@ -885,20 +886,20 @@ class ShadowClient(discord.Client):
 					current_message = await self.main_channel.send(self.game.getName(i)+' '+str(self.game.getEmoji(i))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
 					if block_value > dice_value and dice_value > 0:
-						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11)
+						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11,self.quotes_on)
 					else:
-						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0)
+						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0,self.quotes_on)
 				# Lothaire can try to block
 				elif self.game.getCharacter(i) == character_list.lothaire2 and self.game.isRevealed(i) and self.game.isAbilityAvailable(i):
 					block_value = abs(self.game.d6()-self.game.d4())	
 					current_message = await self.main_channel.send(self.game.getName(i)+' '+str(self.game.getEmoji(i))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
 					if block_value + dice_value >= 6 and dice_value > 0:
-						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11)
+						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11,self.quotes_on)
 					else:
-						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0)
+						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0,self.quotes_on)
 				else:
-					damage_str = self.game.damage(self.game.turn_of,i,dice_value,0)
+					damage_str = self.game.damage(self.game.turn_of,i,dice_value,0,self.quotes_on)
 
 
 
@@ -1002,7 +1003,7 @@ class ShadowClient(discord.Client):
 
 			for i in range(0,self.game.nb_players()):
 				if self.game.turn_of != i and self.game.isAlive(i):
-					ret_str = self.game.damage(self.game.turn_of,i,2,2)
+					ret_str = self.game.damage(self.game.turn_of,i,2,2,self.quotes_on)
 					current_message = await self.main_channel.send(ret_str)
 					await self.add_message_to_buffer(current_message)
 
@@ -1314,7 +1315,7 @@ class ShadowClient(discord.Client):
 			self.game.last_drawn = 2
 			self.game.discard_darkness(card)
 			if(self.game.isInventoryEmpty(self.game.turn_of)):
-				ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,1,8)
+				ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,1,8,self.quotes_on)
 				current_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(current_message)
 				await self.pillage_victory_and_deaths(self.area_effect_post)
@@ -1369,7 +1370,7 @@ class ShadowClient(discord.Client):
 		if card == darkness.aids_card:
 			self.game.last_drawn = 0
 			self.game.gainItem(self.game.turn_of,items.aids)
-			ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,1,9)
+			ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,1,9,self.quotes_on)
 			if ret_str != '':
 				current_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(current_message)
@@ -1409,7 +1410,7 @@ class ShadowClient(discord.Client):
 		if self.game.player_receiving_item != None and self.game.item_to_give != None:
 			ret_str = self.game.giveItem(self.game.turn_of,self.game.player_receiving_item,self.game.item_to_give)
 			if self.game.item_to_give == items.aids:
-				ret_str = ret_str + '\n'+self.game.damage(self.game.turn_of,self.game.player_receiving_item,1,9)
+				ret_str = ret_str + '\n'+self.game.damage(self.game.turn_of,self.game.player_receiving_item,1,9,self.quotes_on)
 			await self.last_choice_message.delete()
 			self.last_choice_message = None
 			current_message = await self.main_channel.send(ret_str)
@@ -1468,7 +1469,7 @@ class ShadowClient(discord.Client):
 				await self.add_message_to_buffer(current_message)
 
 				if dice_result <= 3:
-					ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,1,9)
+					ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,1,9,self.quotes_on)
 					current_message = await reaction.message.channel.send(ret_str)
 					await self.add_message_to_buffer(current_message)
 					if (self.game.erik_active and self.game.getCharacter(self.game.turn_of) == character_list.erik):
@@ -1529,7 +1530,7 @@ class ShadowClient(discord.Client):
 					j = i
 			if target_found:
 				await self.last_choice_message.delete()
-				ret_str = self.game.giveItem(self.game.turn_of,j,items.aids) + '\n' + self.game.damage(self.game.turn_of,j,1,9)
+				ret_str = self.game.giveItem(self.game.turn_of,j,items.aids) + '\n' + self.game.damage(self.game.turn_of,j,1,9,self.quotes_on)
 				current_message = await reaction.message.channel.send(ret_str)
 				await self.add_message_to_buffer(current_message)
 				if (self.game.erik_active and self.game.getCharacter(self.game.turn_of) == character_list.erik):
@@ -1573,7 +1574,7 @@ class ShadowClient(discord.Client):
 						j = i
 				if target_found:
 					await self.last_choice_message.delete()
-					ret_str = self.game.damage(self.game.turn_of,j,3,7)
+					ret_str = self.game.damage(self.game.turn_of,j,3,7,self.quotes_on)
 					current_message = await reaction.message.channel.send(ret_str)
 					await self.add_message_to_buffer(current_message)
 					self.game.mummy_fired = False
@@ -1628,7 +1629,7 @@ class ShadowClient(discord.Client):
 				self.last_choice_message = None
 
 				if self.game.gamemap[location_id] != self.game.link_destination_1 and self.game.gamemap[location_id] != self.game.link_destination_2:
-					damage_str = self.game.damage(self.game.turn_of,self.game.turn_of,2,17)
+					damage_str = self.game.damage(self.game.turn_of,self.game.turn_of,2,17,self.quotes_on)
 					current_message = await self.main_channel.send(damage_str)
 					await self.add_message_to_buffer(current_message)
 
@@ -1759,7 +1760,7 @@ class ShadowClient(discord.Client):
 				pChan = self.game.getChannel(j)
 				await pChan.send('Tu as choisi de subir **1** Blessure.')
 				await (self.game.getChannel(self.game.turn_of)).send(self.game.getName(j)+' '+str(self.game.getEmoji(j))+' va subir **1** Blessure.')
-				ret_str = self.game.damage(self.game.turn_of,j,1,10)
+				ret_str = self.game.damage(self.game.turn_of,j,1,10,self.quotes_on)
 				current_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(current_message)
 
@@ -1774,7 +1775,7 @@ class ShadowClient(discord.Client):
 				pChan = self.game.getChannel(j)
 				await pChan.send('Tu as choisi de subir **2** Blessures.')
 				await (self.game.getChannel(self.game.turn_of)).send(self.game.getName(j)+' '+str(self.game.getEmoji(j))+' va subir **2** Blessures.')
-				ret_str = self.game.damage(self.game.turn_of,j,2,10)
+				ret_str = self.game.damage(self.game.turn_of,j,2,10,self.quotes_on)
 				current_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(current_message)
 
@@ -1809,7 +1810,7 @@ class ShadowClient(discord.Client):
 					ret_str = self.game.giveItem(j,self.game.turn_of,self.game.item_to_give)
 					# Erreur ici quand on donne le SIDA, apparemment. Rien ne se passe.
 					if self.game.item_to_give == items.aids:
-						ret_str = ret_str + '\n'+self.game.damage(j,self.game.turn_of,1,9)
+						ret_str = ret_str + '\n'+self.game.damage(j,self.game.turn_of,1,9,self.quotes_on)
 
 					pChan = self.game.getChannel(j)
 					await pChan.send('Tu as choisi de donner '+self.game.item_to_give.getArticleNameEmoji()+'.')
@@ -1885,7 +1886,7 @@ class ShadowClient(discord.Client):
 					item_to_steal = items.emoji_to_item_dictionary.get(emoji_item,None)
 					ret_str = self.game.stealItem(self.game.turn_of,target_player,item_to_steal)
 					if item_to_steal == items.aids:
-						ret_str = ret_str + '\n'+self.game.damage(self.game.turn_of,self.game.turn_of,1,9)
+						ret_str = ret_str + '\n'+self.game.damage(self.game.turn_of,self.game.turn_of,1,9,self.quotes_on)
 					current_message = await self.main_channel.send(ret_str)
 					await self.add_message_to_buffer(current_message)
 					await self.pillage_victory_and_deaths(self.attack_pre)
@@ -1991,20 +1992,20 @@ class ShadowClient(discord.Client):
 					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
 					if block_value > dice_value and dice_value > 0:
-						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,16)
+						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,16,self.quotes_on)
 					else:
-						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15)
+						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15,self.quotes_on)
 				# Lothaire II can try to block
 				elif self.game.getCharacter(self.game.turn_of) == character_list.lothaire2 and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
 					block_value = abs(self.game.d6()-self.game.d4())	
 					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
 					if block_value + dice_value >= 6 and dice_value > 0:
-						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,16)
+						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,16,self.quotes_on)
 					else:
-						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15)
+						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15,self.quotes_on)
 				else:
-					damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15)
+					damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15,self.quotes_on)
 
 				# Sending messages
 				current_message = await self.main_channel.send(damage_str)
@@ -2033,7 +2034,7 @@ class ShadowClient(discord.Client):
 				item_to_steal = items.emoji_to_item_dictionary.get(emoji_item,None)
 				ret_str = self.game.stealItem(self.game.turn_of,i,item_to_steal)
 				if item_to_steal == items.aids:
-					ret_str = ret_str + '\n'+self.game.damage(self.game.turn_of,self.game.turn_of,1,9)
+					ret_str = ret_str + '\n'+self.game.damage(self.game.turn_of,self.game.turn_of,1,9,self.quotes_on)
 				current_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(current_message)
 				self.game.waiting_for_pillage = self.game.waiting_for_pillage[1:len(self.game.waiting_for_pillage)]
@@ -2083,7 +2084,7 @@ class ShadowClient(discord.Client):
 				if target_found:
 					await self.last_choice_message.delete()
 					self.last_choice_message = None
-					ret_str = self.game.damage(self.game.turn_of,j,0,3)
+					ret_str = self.game.damage(self.game.turn_of,j,0,3,self.quotes_on)
 					current_message = await self.main_channel.send(ret_str)
 					await self.add_message_to_buffer(current_message)
 					if self.game.getCharacter(self.game.turn_of) == character_list.bob and (self.game.bob_draw) and (self.game.last_drawn != 0) and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
@@ -2214,7 +2215,7 @@ class ShadowClient(discord.Client):
 				item_to_steal = items.emoji_to_item_dictionary.get(emoji_item,None)
 				ret_str = self.game.stealItem(self.game.turn_of,target_player,item_to_steal)
 				if item_to_steal == items.aids:
-					ret_str = ret_str + '\n'+self.game.damage(self.game.turn_of,self.game.turn_of,1,9)
+					ret_str = ret_str + '\n'+self.game.damage(self.game.turn_of,self.game.turn_of,1,9,self.quotes_on)
 				current_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(current_message)
 				if self.game.getCharacter(self.game.turn_of) == character_list.bob and (self.game.bob_draw) and (self.game.last_drawn != 0) and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
@@ -2253,7 +2254,7 @@ class ShadowClient(discord.Client):
 			if target_found:
 				await self.last_choice_message.delete()
 				self.last_choice_message = None
-				ret_str = self.game.damage(self.game.turn_of,j,2,4)
+				ret_str = self.game.damage(self.game.turn_of,j,2,4,self.quotes_on)
 				current_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(current_message)
 
@@ -2284,13 +2285,13 @@ class ShadowClient(discord.Client):
 			if target_found:
 				await self.last_choice_message.delete()
 				self.last_choice_message = None
-				ret_str = self.game.damage(self.game.turn_of,j,2,5)
+				ret_str = self.game.damage(self.game.turn_of,j,2,5,self.quotes_on)
 				current_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(current_message)
 
 				# Damaging the player if he is Alive
 				if self.game.isAlive(self.game.turn_of):
-					ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,2,5)
+					ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,2,5,self.quotes_on)
 					current_message = await self.main_channel.send(ret_str)
 					await self.add_message_to_buffer(current_message)
 
@@ -2323,7 +2324,7 @@ class ShadowClient(discord.Client):
 				for i in range(0,self.game.nb_players()):
 					if self.game.isAlive(i) and ( self.game.getLocation(i) == self.game.gamemap[loc1_id] or self.game.getLocation(i) == self.game.gamemap[loc2_id] ):
 						no_one_got_hit = False
-						ret_str = self.game.damage(self.game.turn_of,i,3,6)
+						ret_str = self.game.damage(self.game.turn_of,i,3,6,self.quotes_on)
 						current_message = await self.main_channel.send(ret_str)
 						await self.add_message_to_buffer(current_message)
 
@@ -2352,11 +2353,11 @@ class ShadowClient(discord.Client):
 				await self.add_message_to_buffer(current_message)
 
 				if dice_result <= 4:
-					ret_str = self.game.damage(self.game.turn_of,j,3,7)
+					ret_str = self.game.damage(self.game.turn_of,j,3,7,self.quotes_on)
 					current_message = await self.main_channel.send(ret_str)
 					await self.add_message_to_buffer(current_message)
 				else:
-					ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,3,7)
+					ret_str = self.game.damage(self.game.turn_of,self.game.turn_of,3,7,self.quotes_on)
 					current_message = await self.main_channel.send(ret_str)
 					await self.add_message_to_buffer(current_message)
 
@@ -2465,7 +2466,7 @@ class ShadowClient(discord.Client):
 					await self.last_choice_message.delete()
 					self.last_choice_message = None
 					dice_value = self.game.d4()
-					damage_str = self.game.damage(self.game.turn_of,j,dice_value,2)
+					damage_str = self.game.damage(self.game.turn_of,j,dice_value,2,self.quotes_on)
 					current_message = await self.main_channel.send(damage_str)
 					await self.add_message_to_buffer(current_message)
 					self.game.consumeAbility(self.game.turn_of)
@@ -2492,7 +2493,7 @@ class ShadowClient(discord.Client):
 					await self.last_choice_message.delete()
 					self.last_choice_message = None
 					dice_value = self.game.d6()
-					damage_str = self.game.damage(self.game.turn_of,j,dice_value,2)
+					damage_str = self.game.damage(self.game.turn_of,j,dice_value,2,self.quotes_on)
 					current_message = await self.main_channel.send(damage_str)
 					await self.add_message_to_buffer(current_message)
 					self.game.consumeAbility(self.game.turn_of)
@@ -2518,7 +2519,7 @@ class ShadowClient(discord.Client):
 				if target_found:
 					await self.last_choice_message.delete()
 					self.last_choice_message = None
-					damage_str = self.game.damage(self.game.turn_of,j,0,3)
+					damage_str = self.game.damage(self.game.turn_of,j,0,3,self.quotes_on)
 					current_message = await self.main_channel.send(damage_str)
 					await self.add_message_to_buffer(current_message)
 					self.game.consumeAbility(self.game.turn_of)
@@ -2646,7 +2647,7 @@ class ShadowClient(discord.Client):
 				for j in range(0,self.game.nb_players()):
 					away_condition = (self.game.getLocation(j) != self.game.gamemap[id_of_player_loc] and self.game.getLocation(j) != self.game.gamemap[id_of_twin_loc])
 					if away_condition and self.game.isAlive(j):
-						damage_str = self.game.damage(self.game.turn_of,j,2,12)
+						damage_str = self.game.damage(self.game.turn_of,j,2,12,self.quotes_on)
 						current_message = await self.main_channel.send(damage_str)
 						await self.add_message_to_buffer(current_message)
 				self.game.consumeAbility(self.game.turn_of)
@@ -2712,7 +2713,7 @@ class ShadowClient(discord.Client):
 					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' **se réveille**.\n')
 					await self.add_message_to_buffer(current_message)
 					if self.game.isAlive(self.game.varimathras_id):
-						ret_str = self.game.damage(self.game.varimathras_id,self.game.turn_of,4,18)
+						ret_str = self.game.damage(self.game.varimathras_id,self.game.turn_of,4,18,self.quotes_on)
 						if ret_str != '':
 							current_message = await self.main_channel.send(ret_str)
 							await self.add_message_to_buffer(current_message)
@@ -2927,6 +2928,7 @@ class ShadowClient(discord.Client):
 					+'\n*Configuration du bot*\n'					
 					+'**'+self.prefix+'intro** : présente le bot.\n'
 					+'**'+self.prefix+'setSHprefix** *caractère* : modifie le préfixe des commandes par le caractère indiqué (! par défaut).\n'
+					+'**'+self.prefix+'set** quotes on/off : active/désactive les citations en jeu.\n'
 					)
 			await self.add_message_to_buffer(message)
 			await self.add_message_to_buffer(current_message)
@@ -3240,6 +3242,17 @@ class ShadowClient(discord.Client):
 					self.prefix = message.content[lp+12:lm]
 					await message.add_reaction('\U0001F197')
 					await self.add_message_to_buffer(message)
+
+		elif message.content.startswith(self.prefix+'set quotes on'):
+			self.quotes_on = True
+			await message.add_reaction('\U0001F197')
+			await self.add_message_to_buffer(message)
+
+		# Someone tries to start a game
+		elif message.content.startswith(self.prefix+'set quotes off'):
+			self.quotes_on = False
+			await message.add_reaction('\U0001F197')
+			await self.add_message_to_buffer(message)
 
 		# Someone tries to start a game
 		elif message.content == self.prefix+'start':
