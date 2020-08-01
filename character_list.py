@@ -69,8 +69,8 @@ char_dictionary = {
 "Bryan": bryan
 }
 
-#hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
-hunter_list=[link,link]
+hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
+#hunter_list=[link,link]
 
 shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
 #shadow_list=[ganondorf,ganondorf]
