@@ -32,8 +32,10 @@ daniel = characters.Character("Daniel",13,"Neutre",":yellow_circle:","Être le p
 catherine = characters.Character("Catherine",11,"Neutre",":yellow_circle:","Être la première à mourir OU être l'un des deux seuls personnages en vie à la fin de la partie.","*Stigmates (Passif)* | Au début de votre tour, soignez une de vos Blessures.",False,True)
 allie = characters.Character("Allie",8,"Neutre",":yellow_circle:","Être en vie à la fin de la partie.","*Régénération (Activable, Utilisation unique)* | A n'importe quel moment, vous pouvez soigner toutes vos Blessures.",True,True)
 agnes = characters.Character("Agnès",8,"Neutre",":yellow_circle:","Le joueur qui vous précède dans l'ordre du tour gagne.","*Opportunisme (Activable, Utilisation unique)* | Au début de votre tour, vous pouvez changer votre condition de victoire comme suit : vous gagnez désormais si le joueur qui vous suit dans l'ordre du tour gagne.",True,True)
+angus = characters.Character("Angus",8,"Neutre",":yellow_circle:","Le joueur qui vous précède dans l'ordre du tour gagne.","*Opportunisme (Activable, Utilisation unique)* | Au début de votre tour, vous pouvez changer votre condition de victoire comme suit : vous gagnez désormais si le joueur qui vous précède dans l'ordre du tour perd.",True,True)
 neo = characters.Character("Neo",11,"Neutre",":yellow_circle:","Le joueur qui vous précède dans l'ordre du tour est en vie à la fin de la partie OU vous êtes en vie quand le joueur qui l'a tué est mort. Si vous tuez vous même le joueur qui vous précède ou s'il se suicide, vous perdez et mourez instantanément.","*Adrénaline (Passif)* | Dès que le joueur qui vous précède meurt, votre identité est automatiquement révélée. Toutes les Blessures que vous inflige le joueur qui l'a tué sont réduites de 1.",False,False)
 bob = characters.Character("Bob",11,"Neutre",":yellow_circle:","Posséder 4 cartes équipement ou plus.","*Braquage (Conditionné)* | Si vous piochez une carte Lumière ou Ténèbres à effet immédiat, vous pouvez piocher une autre carte du même type (une fois par tour).",False,True)
+cartouche = characters.Character("Cartouche",11,"Neutre",":yellow_circle:","Posséder 4 cartes équipement ou plus.","*Braquage (Passif)* | Lorsque vous envoyez une carte vision à un joueur possédant des équipements et qu'il a la possibilité de vous en donner, il doit le faire.",False,True)
 bryan = characters.Character("Bryan",11,"Neutre",":yellow_circle:","Être en vie quand le joueur qui vous précède et celui qui vous suit dans l'ordre du tour sont morts.","*OH MY GOD!* | Si vous tuez un autre joueur que ceux-ci, votre identité est automatiquement révélée.",False,False)
 
 char_dictionary = {
@@ -64,8 +66,10 @@ char_dictionary = {
 "Catherine": catherine,
 "Allie": allie,
 "Agnès": agnes,
+"Angus": angus,
 "Neo": neo,
 "Bob": bob,
+"Cartouche": cartouche,
 "Bryan": bryan
 }
 
@@ -76,4 +80,4 @@ shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine
 #shadow_list=[ganondorf,ganondorf]
 
 neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan]
-#neutral_list=[daniel,allie]
+#neutral_list=[cartouche,cartouche]

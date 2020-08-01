@@ -284,7 +284,7 @@ class ShadowClient(discord.Client):
 					ret_str = ret_str + ' (1 Blessure)\n'
 
 		# If the player has a power which it can trigger on its own in the beginning of the turn
-		if self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of) and (self.game.getCharacter(self.game.turn_of) == character_list.georges or self.game.getCharacter(self.game.turn_of) == character_list.franklin or self.game.getCharacter(self.game.turn_of) == character_list.fuka or self.game.getCharacter(self.game.turn_of) == character_list.ellen or self.game.getCharacter(self.game.turn_of) == character_list.erik  or self.game.getCharacter(self.game.turn_of) == character_list.majora or self.game.getCharacter(self.game.turn_of) == character_list.agnes):
+		if self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of) and (self.game.getCharacter(self.game.turn_of) == character_list.georges or self.game.getCharacter(self.game.turn_of) == character_list.franklin or self.game.getCharacter(self.game.turn_of) == character_list.fuka or self.game.getCharacter(self.game.turn_of) == character_list.ellen or self.game.getCharacter(self.game.turn_of) == character_list.erik  or self.game.getCharacter(self.game.turn_of) == character_list.majora or self.game.getCharacter(self.game.turn_of) == character_list.agnes or self.game.getCharacter(self.game.turn_of) == character_list.angus):
 			ret_str = ret_str+'> Taper **'+self.prefix+'pow** : utiliser ton pouvoir (puis te déplacer)'
 
 		# If he's Emi and revealed, suggest two reactions for the corresponding moves possible
@@ -2794,7 +2794,7 @@ class ShadowClient(discord.Client):
 		elif message.content == self.prefix+'charlist':
 			current_message = await message.channel.send('Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Lothaire/Lothaire II, Marth\n'
 						  +'Shadows :red_circle: : Charles, Ganondorf, Majora, Métamorphe, Mograine, Momie, Liche, Loup-Garou, Valkyrie, Vampire, Varimathras\n'
-						  +'Neutres :yellow_circle: : Allie, Agnès, Bob, Bryan, Catherine, Daniel, Neo\n')
+						  +'Neutres :yellow_circle: : Allie, Agnès/Angus, Bob/Cartouche, Bryan, Catherine, Daniel, Neo\n')
 			await self.add_message_to_buffer(message)
 			await self.add_message_to_buffer(current_message)
 
@@ -3003,6 +3003,17 @@ class ShadowClient(discord.Client):
 						self.game.agnes_switched = True
 						self.game.consumeAbility(pid)
 						current_message = await message.channel.send(self.game.getName(pid)+' '+str(self.game.getEmoji(pid))+' change sa condition de victoire, et **gagnera si '+self.game.getName((pid+1)%self.game.nb_players())+'** '+str(self.game.getEmoji((pid+1)%self.game.nb_players()))+' **gagne**.')
+						await self.add_message_to_buffer(current_message)
+						await self.update()
+
+				# Power of Angus
+				elif self.game.getCharacter(pid) == character_list.angus:
+					if self.turn_phase != 0 or pid != self.game.turn_of:
+						await message.add_reaction('\U0001F6AB')
+					else:
+						self.game.angus_switched = True
+						self.game.consumeAbility(pid)
+						current_message = await message.channel.send(self.game.getName(pid)+' '+str(self.game.getEmoji(pid))+' change sa condition de victoire, et **gagnera si '+self.game.getName((pid-1)%self.game.nb_players())+'** '+str(self.game.getEmoji((pid-1)%self.game.nb_players()))+' **perd**.')
 						await self.add_message_to_buffer(current_message)
 						await self.update()
 

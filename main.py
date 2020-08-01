@@ -25,6 +25,7 @@ class Game:
 	# Winning conditions parameters
 	first_blood = False # While false, Catherine and Daniel can win by dying first.
 	agnes_switched = False # Used in the victory condition of Agnes
+	angus_switched = False # Used in the victory condition of Angus
 	neo_target = None # Used in the victory condition of Neo
 	neo_revenge_activated = None # While false, Neo only needs to protect the player who plays before her.
 	neo_id = None # id of the player playing Neo if it exists
@@ -113,6 +114,14 @@ class Game:
 				rand_int = random.randint(1,2)
 				if rand_int == 2:
 					self.char_pool[i] = character_list.lothaire2
+			if self.char_pool[i] == character_list.bob:
+				rand_int = random.randint(1,2)
+				if rand_int == 2:
+					self.char_pool[i] = character_list.cartouche
+			if self.char_pool[i] == character_list.agnes:
+				rand_int = random.randint(1,2)
+				if rand_int == 2:
+					self.char_pool[i] = character_list.angus
 			if sudden_death:
 				self.playerlist[i].setCharacter(character_list.daniel)
 			else:
@@ -204,6 +213,11 @@ class Game:
 					res = res+'> Victoire : avec '+self.playerlist[(i+1)%self.nb_players()].getName()+' '+str(self.playerlist[(i+1)%self.nb_players()].getEmoji())+'\n'
 				else:
 					res = res+'> Victoire : avec '+self.playerlist[(i-1)%self.nb_players()].getName()+' '+str(self.playerlist[(i-1)%self.nb_players()].getEmoji())+'\n'
+			if self.playerlist[i].getCharacter() == character_list.angus and self.isRevealed(i):
+				if self.angus_switched:
+					res = res+'> Victoire : '+self.playerlist[(i-1)%self.nb_players()].getName()+' '+str(self.playerlist[(i-1)%self.nb_players()].getEmoji())+' doit perdre\n'
+				else:
+					res = res+'> Victoire : '+self.playerlist[(i-1)%self.nb_players()].getName()+' '+str(self.playerlist[(i-1)%self.nb_players()].getEmoji())+' doit gagner\n'
 			if (self.isAlive(i)):
 				res=res+'> '+'Blessures : '+str(self.playerlist[i].getWounds())+'/'
 				if(self.playerlist[i].isRevealed()):
@@ -444,7 +458,16 @@ class Game:
 							or ( (not self.agnes_switched) and self.didPlayerWin((i-1)%self.nb_players()) ) 
 						   )
 
+		elif self.playerlist[i].getCharacter() == character_list.angus:
+			return self.game_ended and ( 
+							(self.angus_switched and (not self.didPlayerWin((i-1)%self.nb_players())) ) 
+							or ( (not self.angus_switched) and self.didPlayerWin((i-1)%self.nb_players()) ) 
+						   )
+
 		elif self.playerlist[i].getCharacter() == character_list.bob:
+			return len(self.lightInventory(i))+len(self.darknessInventory(i)) >= 4
+
+		elif self.playerlist[i].getCharacter() == character_list.cartouche:
 			return len(self.lightInventory(i))+len(self.darknessInventory(i)) >= 4
 
 		elif self.playerlist[i].getCharacter() == character_list.bryan:
@@ -1067,7 +1090,8 @@ class Game:
 				await message.add_reaction('\U0001F4A3')
 		elif self.current_vision == vision.furtive:
 			if self.getCharacter(j) == character_list.metamorph:
-				await message.add_reaction('\U0001FA78')
+				if not(self.getCharacter(self.turn_of) == character_list.cartouche and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and (len(self.lightInventory(j)) + len(self.darknessInventory(j)) > 0)):
+					await message.add_reaction('\U0001FA78')
 				for k in range(0,len(self.lightInventory(j))):
 					await message.add_reaction(((self.lightInventory(j))[k]).getEmoji())
 				for k in range(0,len(self.darknessInventory(j))):
@@ -1076,7 +1100,8 @@ class Game:
 			elif not (self.isHunter(j) or self.isShadow(j)):
 				await message.add_reaction('\u274C')
 			else:
-				await message.add_reaction('\U0001FA78')
+				if not(self.getCharacter(self.turn_of) == character_list.cartouche and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and (len(self.lightInventory(j)) + len(self.darknessInventory(j)) > 0)):
+					await message.add_reaction('\U0001FA78')
 				for k in range(0,len(self.lightInventory(j))):
 					await message.add_reaction(((self.lightInventory(j))[k]).getEmoji())
 				for k in range(0,len(self.darknessInventory(j))):
@@ -1084,7 +1109,8 @@ class Game:
 		elif self.current_vision == vision.enivrante:
 			if self.getCharacter(j) == character_list.metamorph:
 				await message.add_reaction('\u274C')
-				await message.add_reaction('\U0001FA78')
+				if not(self.getCharacter(self.turn_of) == character_list.cartouche and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and (len(self.lightInventory(j)) + len(self.darknessInventory(j)) > 0)):
+					await message.add_reaction('\U0001FA78')
 				for k in range(0,len(self.lightInventory(j))):
 					await message.add_reaction(((self.lightInventory(j))[k]).getEmoji())
 				for k in range(0,len(self.darknessInventory(j))):
@@ -1092,14 +1118,16 @@ class Game:
 			elif not (self.isHunter(j) or self.isNeutral(j)):
 				await message.add_reaction('\u274C')
 			else:
-				await message.add_reaction('\U0001FA78')
+				if not(self.getCharacter(self.turn_of) == character_list.cartouche and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and (len(self.lightInventory(j)) + len(self.darknessInventory(j)) > 0)):
+					await message.add_reaction('\U0001FA78')
 				for k in range(0,len(self.lightInventory(j))):
 					await message.add_reaction(((self.lightInventory(j))[k]).getEmoji())
 				for k in range(0,len(self.darknessInventory(j))):
 					await message.add_reaction(((self.darknessInventory(j))[k]).getEmoji())
 		elif self.current_vision == vision.cupide:
 			if self.getCharacter(j) == character_list.metamorph:
-				await message.add_reaction('\U0001FA78')
+				if not(self.getCharacter(self.turn_of) == character_list.cartouche and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and (len(self.lightInventory(j)) + len(self.darknessInventory(j)) > 0)):
+					await message.add_reaction('\U0001FA78')
 				for k in range(0,len(self.lightInventory(j))):
 					await message.add_reaction(((self.lightInventory(j))[k]).getEmoji())
 				for k in range(0,len(self.darknessInventory(j))):
@@ -1108,7 +1136,8 @@ class Game:
 			elif not (self.isNeutral(j) or self.isShadow(j)):
 				await message.add_reaction('\u274C')
 			else:
-				await message.add_reaction('\U0001FA78')
+				if not(self.getCharacter(self.turn_of) == character_list.cartouche and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and (len(self.lightInventory(j)) + len(self.darknessInventory(j)) > 0)):
+					await message.add_reaction('\U0001FA78')
 				for k in range(0,len(self.lightInventory(j))):
 					await message.add_reaction(((self.lightInventory(j))[k]).getEmoji())
 				for k in range(0,len(self.darknessInventory(j))):
