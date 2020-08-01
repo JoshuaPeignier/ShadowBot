@@ -12,7 +12,7 @@ erik = characters.Character("Erik",10,"Hunter",":blue_circle:","Tous les personn
 lothaire = characters.Character("Lothaire",14,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Blocage (Passif)* | Lorsque vous subissez une attaque, lancez les deux dés et calculez le résultat comme pour un jet d'attaque. Si le résultat de votre jet est strictement supérieur au résultat du jet de l'attaque adverse, vous ne subissez aucune Blessure.",False,True)
 lothaire2 = characters.Character("Lothaire II",14,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Blocage (Passif)* | Lorsque vous subissez une attaque, lancez les deux dés et calculez le résultat comme pour un jet d'attaque. Si la somme de votre jet et du jet d'attaque adverse vaut au moins 6, vous ne subissez aucune Blessure.",False,True)
 marth = characters.Character("Marth",12,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Perforation (Passif)* | Lorsque vous attaquez un joueur situé sur un lieu adjacent au vôtre et ne faites pas 0, vous lui infligez une Blessure supplémentaire.",False,True)
-link = characters.Character("Link",12,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Bombe glitchée (Conditionné)* | Après avoir lancé les dés pour vous déplacer, si le résultat ne vous satisfait pas, vous pouvez vous infliger 2 Blessures pour vous déplacer où vous le souhaitez.",False,True)
+link = characters.Character("Link",12,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Bombe glitchée (Conditionné)* | Au début de votre tour, vous pouvez subir une Blessure pour lancer deux fois les dés pour votre déplacement, et choisir le résultat.",False,True)
 
 # Shadows
 werewolf = characters.Character("Loup-Garou",14,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Contre-Attaque (Conditionné) * | Après avoir subi l'attaque d'un joueur, vous pouvez contre-attaquer immédiatement (sans vos équipements).",False,True)
@@ -69,8 +69,8 @@ char_dictionary = {
 "Bryan": bryan
 }
 
-hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
-#hunter_list=[marth,marth]
+#hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
+hunter_list=[link,link]
 
 shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
 #shadow_list=[ganondorf,ganondorf]

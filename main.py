@@ -59,8 +59,6 @@ class Game:
 	erik_target_1 = None
 	erik_target_2 = None
 	erik_target_3 = None
-	link_destination_1 = None
-	link_destination_2 = None
 	daniel_allegiance = None
 	bob_draw = False
 	last_drawn = 0 # 0 for nothing or for vision ; 1 for light ; 2 for darkness
@@ -1607,10 +1605,10 @@ class Game:
 		# Link
 		if source == 17:
 			if self.hasItem(pid2,items.robe):
-				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value-1)+'** Blessures (Absorbé : 1).\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value-1)+'** Blessure (Absorbé : 1).\n' 
 				temp = self.playerlist[pid2].damage(value-1)
 			else:
-				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value)+'** Blessures.\n' 
+				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' s\'explose et subit **'+str(value)+'** Blessure.\n' 
 				temp = self.playerlist[pid2].damage(value)
 
 		# Slumber ends with damage

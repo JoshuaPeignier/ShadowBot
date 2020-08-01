@@ -276,6 +276,12 @@ class ShadowClient(discord.Client):
 			ret_str = ret_str+'> \U0001F9ED : **2 jets de déplacement** et choix du résultat\n'
 		else:
 			ret_str = ret_str+'> \U0001F3B2 : **jet de déplacement**\n'
+			if self.game.getCharacter(self.game.turn_of) == character_list.link and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
+				ret_str = ret_str+'> \U0001F4A3 : **2 jets de déplacement** et choix du résultat'
+				if self.game.hasItem(self.game.turn_of,items.robe):
+					ret_str = ret_str + ' (0 Blessure)\n'
+				else:
+					ret_str = ret_str + ' (1 Blessure)\n'
 
 		# If the player has a power which it can trigger on its own in the beginning of the turn
 		if self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of) and (self.game.getCharacter(self.game.turn_of) == character_list.georges or self.game.getCharacter(self.game.turn_of) == character_list.franklin or self.game.getCharacter(self.game.turn_of) == character_list.fuka or self.game.getCharacter(self.game.turn_of) == character_list.ellen or self.game.getCharacter(self.game.turn_of) == character_list.erik  or self.game.getCharacter(self.game.turn_of) == character_list.majora or self.game.getCharacter(self.game.turn_of) == character_list.agnes):
@@ -303,6 +309,9 @@ class ShadowClient(discord.Client):
 			await self.last_choice_message.add_reaction('\U0001F9ED')
 		else:
 			await self.last_choice_message.add_reaction('\U0001F3B2')
+			if self.game.getCharacter(self.game.turn_of) == character_list.link and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
+				await self.last_choice_message.add_reaction('\U0001F4A3')
+
 		# If he's the Mummy and revealed, suggest reactions for players on the Otherworld Door
 		if self.game.getCharacter(self.game.turn_of) == character_list.mummy and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of) and self.game.mummy_fired:
 			await self.game.print_target_reactions(self.last_choice_message,False,2)
@@ -339,35 +348,8 @@ class ShadowClient(discord.Client):
 								    +' a fait '+str(dice_result)+'.')
 		await self.add_message_to_buffer(current_message)
 
-		# If not a 7, and player is Link, revealed and power is available
-		if dice_result != 7 and self.game.getCharacter(self.game.turn_of) == character_list.link and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
-
-			self.game.link_destination_1 = self.game.location_of_result(dice_result)
-
-			# Getting the list of possible locations
-			location_string = ''
-			for i in range(0,6):
-				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
-					location_string = location_string+'> '+self.game.gamemap[i].getName()+' '+str(self.game.gamemap[i].getColor())
-					if self.game.gamemap[i] != self.game.link_destination_1:
-						cost = '(2 Blessures)'
-						if self.game.hasItem(self.game.turn_of,items.robe):
-							cost = '(1 Blessure)'
-						location_string = location_string+' '+cost
-					location_string = location_string+'\n'
-
-			# Sending the message and reactions
-			self.turn_phase = -2
-			wound_value = '**2** Blessures'
-			if self.game.hasItem(self.game.turn_of,items.robe):
-				wound_value = '**1** Blessure'
-			self.last_choice_message = await self.main_channel.send('Tu peux te déplacer vers '+self.game.link_destination_1.getNameArticle()+' '+self.game.link_destination_1.getColor()+' ou subir '+wound_value+' pour te rendre ailleurs. Où souhaites-tu aller ?\n'+location_string)
-			for i in range(0,6):
-				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
-					await self.last_choice_message.add_reaction(self.game.gamemap[i].getColor())
-
 		# If not a 7, player moves directly
-		elif dice_result != 7:
+		if dice_result != 7:
 			new_loc_str = self.game.move_player_to(self.game.turn_of,dice_result)
 			await self.moving_finish(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' se déplace vers **'+new_loc_str+'**.')
 
@@ -403,37 +385,9 @@ class ShadowClient(discord.Client):
 		self.turn_phase = -2
 
 
-		# If not a 7, and player is Link, revealed and power is available
-		if dice_result_1 != 7 and dice_result_2 != 7 and self.game.getCharacter(self.game.turn_of) == character_list.link and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
-
-			self.game.link_destination_1 = self.game.location_of_result(dice_result_1)
-			self.game.link_destination_2 = self.game.location_of_result(dice_result_2)
-
-			# Getting the list of possible locations
-			location_string = ''
-			for i in range(0,6):
-				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
-					location_string = location_string+'> '+self.game.gamemap[i].getName()+' '+str(self.game.gamemap[i].getColor())
-					if self.game.gamemap[i] != self.game.link_destination_1 and self.game.gamemap[i] != self.game.link_destination_2:
-						cost = '(2 Blessures)'
-						if self.game.hasItem(self.game.turn_of,items.robe):
-							cost = '(1 Blessure)'
-						location_string = location_string+' '+cost
-					location_string = location_string+'\n'
-
-			# Sending the message and reactions
-			self.turn_phase = -2
-			wound_value = '**2** Blessures'
-			if self.game.hasItem(self.game.turn_of,items.robe):
-				wound_value = '**1** Blessure'
-			self.last_choice_message = await self.main_channel.send('Tu peux te déplacer vers '+self.game.link_destination_1.getNameArticle()+' '+self.game.link_destination_1.getColor()+' ou '+self.game.link_destination_2.getNameArticle()+' '+self.game.link_destination_2.getColor()+' ou subir '+wound_value+' pour te rendre ailleurs. Où souhaites-tu aller ?\n'+location_string)
-			for i in range(0,6):
-				if self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
-					await self.last_choice_message.add_reaction(self.game.gamemap[i].getColor())
-
 
 		# If not a 7, player moves directly
-		elif dice_result_1 != 7 and dice_result_2 != 7:
+		if dice_result_1 != 7 and dice_result_2 != 7:
 			loc_1 = self.game.location_of_result(dice_result_1)
 			loc_2 = self.game.location_of_result(dice_result_2)
 
@@ -1563,6 +1517,13 @@ class ShadowClient(discord.Client):
 				await self.last_choice_message.delete()
 				self.last_choice_message = None
 				await self.moving_compass()
+			elif reaction.emoji == '\U0001F4A3':
+				await self.last_choice_message.delete()
+				self.last_choice_message = None
+				damage_str = self.game.damage(self.game.turn_of,self.game.turn_of,1,17,self.quotes_on)
+				current_message = await self.main_channel.send(damage_str)
+				await self.add_message_to_buffer(current_message)
+				await self.moving_compass()
 			# Mummy's Power
 			else:
 				# we test if the player voted on a valid emoji
@@ -1613,30 +1574,6 @@ class ShadowClient(discord.Client):
 				await self.last_choice_message.delete()
 				self.last_choice_message = None
 				new_loc_str = self.game.move_player_directly(self.game.turn_of,self.game.gamemap[location_id])
-				await self.moving_finish(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' se déplace vers **'+new_loc_str+'**.')
-
-		# When Link is moving
-		elif reaction.message.content.startswith('Tu peux te déplacer vers')  and (user == self.game.getUser(self.game.turn_of)) and (self.turn_phase == -2):
-			location_id = -1
-			# Looks for the location if in the game
-			for i in range(0,6):
-				if self.game.gamemap[i].getColor() == reaction.emoji and self.game.gamemap[i] != self.game.getLocation(self.game.turn_of):
-					location_id = i
-
-			# Moves the player
-			if location_id != -1:
-				await self.last_choice_message.delete()
-				self.last_choice_message = None
-
-				if self.game.gamemap[location_id] != self.game.link_destination_1 and self.game.gamemap[location_id] != self.game.link_destination_2:
-					damage_str = self.game.damage(self.game.turn_of,self.game.turn_of,2,17,self.quotes_on)
-					current_message = await self.main_channel.send(damage_str)
-					await self.add_message_to_buffer(current_message)
-
-				new_loc_str = self.game.move_player_directly(self.game.turn_of,self.game.gamemap[location_id])
-
-				self.game.link_destination_1 = None
-				self.game.link_destination_2 = None
 				await self.moving_finish(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' se déplace vers **'+new_loc_str+'**.')
 
 		# When a player is moving and uses the compass
