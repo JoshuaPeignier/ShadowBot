@@ -1449,10 +1449,11 @@ class Game:
 
 
 			if new_value >= 6 and quotes_on:
-				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1)) + ' : ' + quotes.attack_6_plus()
-
-			if new_value >= 3 and new_value <= 5 and quotes_on:
-				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1)) + ' : ' + quotes.attack_3_to_5()
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1)) + ' : ' + quotes.attacker_6_plus()
+			elif new_value >= 4 and new_value <= 5 and quotes_on:
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1)) + ' : ' + quotes.attacker_4_to_5()
+			elif new_value >= 0 and new_value <= 3 and quotes_on:
+				ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1)) + ' : ' + quotes.attacker_0_to_3()
 
 			# Vanilla attack
 			if source != 15 and source != 16:
@@ -1466,19 +1467,10 @@ class Game:
 					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value-1)+'** Blessures (Absorbé : 1).\n' 
 					temp = self.playerlist[pid2].damage(new_value-1)
 
-					if new_value >= 1 and new_value <= 2 and quotes_on:
-						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_1_to_2()
-					if new_value == 0 and quotes_on:
-						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_0()
-
 				else:
 					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value)+'** Blessures.\n' 
 					temp = self.playerlist[pid2].damage(new_value)
 
-					if new_value >= 1 and new_value <= 2 and quotes_on:
-						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_1_to_2()
-					if new_value == 0 and quotes_on:
-						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_0()
 
 			# Werewolf counterattack
 			else:
@@ -1492,19 +1484,9 @@ class Game:
 					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' contre-attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value-1)+'** Blessures (Absorbé : 1).\n' 
 					temp = self.playerlist[pid2].damage(new_value-1)
 
-					if new_value >= 1 and new_value <= 2 and quotes_on:
-						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_1_to_2()
-					if new_value == 0 and quotes_on:
-						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_0()
-
 				else:
 					ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' contre-attaque **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' et lui inflige **'+str(new_value)+'** Blessures.\n' 
 					temp = self.playerlist[pid2].damage(new_value)
-
-					if new_value >= 1 and new_value <= 2 and quotes_on:
-						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_1_to_2()
-					if new_value == 0 and quotes_on:
-						ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_0()
 
 		# If the player is under the Haunted Forest effect
 		if source == 1:
@@ -1656,6 +1638,17 @@ class Game:
 		if self.isAlive(pid2) and self.getSleepTime(pid2) > 0 and new_HP > (original_HP+1):
 			self.setSleepTime(pid2,0)
 			temp = temp+self.getName(pid2)+' '+str(self.getEmoji(pid2))+' **se réveille**.'
+
+		if new_HP == original_HP and quotes_on:
+			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_missed()
+		elif new_HP <= 4 and quotes_on:
+			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.defender_0_to_4()
+		elif new_HP >= 5 and new_HP <= 7 and quotes_on:
+			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.defender_5_to_7()
+		elif new_HP >= 8 and new_HP <= 10 and quotes_on:
+			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.defender_8_to_10()
+		elif new_HP >= 14 and quotes_on:
+			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.defender_11_to_14()
 
 		# If the player died
 		if (not self.isAlive(pid2)):
