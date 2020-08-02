@@ -1639,15 +1639,15 @@ class Game:
 			self.setSleepTime(pid2,0)
 			temp = temp+self.getName(pid2)+' '+str(self.getEmoji(pid2))+' **se réveille**.'
 
-		if new_HP == original_HP and quotes_on:
+		if new_HP == original_HP and quotes_on and self.isAlive(pid2):
 			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_missed()
-		elif new_HP <= 4 and quotes_on:
+		elif new_HP <= 4 and quotes_on and self.isAlive(pid2):
 			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.defender_0_to_4()
-		elif new_HP >= 5 and new_HP <= 7 and quotes_on:
+		elif new_HP >= 5 and new_HP <= 7 and quotes_on and self.isAlive(pid2):
 			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.defender_5_to_7()
-		elif new_HP >= 8 and new_HP <= 10 and quotes_on:
+		elif new_HP >= 8 and new_HP <= 10 and quotes_on and self.isAlive(pid2):
 			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.defender_8_to_10()
-		elif new_HP >= 14 and quotes_on:
+		elif new_HP >= 14 and quotes_on and self.isAlive(pid2):
 			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.defender_11_to_14()
 
 		# If the player died
