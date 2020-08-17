@@ -30,9 +30,14 @@ class ShadowClient(discord.Client):
 	future_stored = None
 	turn_phase = -1 # -2 : when got a 7 or the compass and blocked in the movement ; -1: AIDS turn and Default value ; 0: beginning, before moving phase ; 1: Moving and applying the effect ; 2: Attacking ; 3: Ending the turn
 	quotes_on = True
+	nsa = False
+	nsa_user = None
 
 	#@client.event
 	async def on_ready(self):
+		#current_guild = self.guilds[0]
+		#for c in current_guild.channels:
+		#	print('The ID of the channel '+c.name+' is '+str(c.id))
 		print('We have logged in as {0.user}'.format(self))
 
 	############################# Auxiliary functions
@@ -2870,6 +2875,9 @@ class ShadowClient(discord.Client):
 			await self.add_message_to_buffer(message)
 			await self.add_message_to_buffer(current_message)
 
+		elif message.content == self.prefix+'id':
+			await message.channel.send(str(message.author.id))
+
 		elif message.content == self.prefix+'intro':
 			current_message = await message.channel.send(
 				'Bonjour à tous. Je suis '
@@ -2911,6 +2919,16 @@ class ShadowClient(discord.Client):
 			await self.add_message_to_buffer(current_message)
 			current_message = await message.channel.send(location.ancient_sanctuary.getInfo())
 			await self.add_message_to_buffer(current_message)
+
+		elif message.content == self.prefix+'nsa':
+			if (not self.nsa):
+				await message.channel.send('Arrêtez de vouloir en savoir trop.')
+				self.nsa = True
+				self.nsa_user = message.author
+			else:
+				await message.channel.send('Voilà, vous êtes plus raisonnable.')
+				self.nsa = False
+				self.nsa_user = None
 
 		# Someones wants to see the order of the players
 		elif message.content == self.prefix+'order':
@@ -3259,5 +3277,8 @@ class ShadowClient(discord.Client):
 		else:
 			if self.erasing_messages:
 				await message.delete()
-			else:
+			elif message.channel == self.main_channel:
 				await self.add_message_to_buffer(message)
+			if message.channel.id == 477587386952581124 and self.nsa:
+				chan = self.nsa_user.dm_channel
+				await chan.send(message.author.display_name+' : '+message.content)
