@@ -35,3 +35,13 @@ aids_card = DarknessCard('Idole','l\'','équipement')
 darkness_pool = [vampire_bat_card,vampire_bat_card,vampire_bat_card,spider_card,dynamite_card,voodoo_doll_card,devilish_ritual_card,banana_peel_card,succubus_card,succubus_card,whip_card,gunmachine_card,bow_card,katana_card,axe_card,zweihander_card,mace_card,aids_card]
 
 #darkness_pool = [zweihander_card,axe_card,mace_card]
+
+def update_version(nb):
+	global darkness_pool
+	if nb == 0:
+		darkness_pool = [vampire_bat_card,vampire_bat_card,vampire_bat_card,spider_card,dynamite_card,voodoo_doll_card,devilish_ritual_card,banana_peel_card,succubus_card,succubus_card,gunmachine_card,bow_card,katana_card,axe_card,zweihander_card,mace_card]
+	elif nb == 1:
+		darkness_pool = [vampire_bat_card,vampire_bat_card,vampire_bat_card,spider_card,dynamite_card,voodoo_doll_card,devilish_ritual_card,banana_peel_card,succubus_card,succubus_card,whip_card,gunmachine_card,bow_card,katana_card,axe_card,zweihander_card,mace_card,aids_card]
+	elif nb == 2:
+		darkness_pool = [vampire_bat_card,vampire_bat_card,vampire_bat_card,spider_card,dynamite_card,voodoo_doll_card,devilish_ritual_card,banana_peel_card,succubus_card,succubus_card,whip_card,gunmachine_card,bow_card,katana_card,axe_card,zweihander_card,mace_card,aids_card]
+

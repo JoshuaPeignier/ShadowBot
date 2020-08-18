@@ -31,11 +31,12 @@ class Game:
 	neo_id = None # id of the player playing Neo if it exists
 	daniel_id = None
 	varimathras_id = None
+	despair_id = None
 
 	# Cards piles
-	light_pile = light.light_pool.copy()
+	light_pile = []
 	light_discarded=[]
-	darkness_pile = darkness.darkness_pool.copy()
+	darkness_pile = []
 	darkness_discarded=[]
 	vision_pile = []
 	vision_discarded=[]
@@ -65,9 +66,12 @@ class Game:
 	last_drawn = 0 # 0 for nothing or for vision ; 1 for light ; 2 for darkness
 	future_after_pillage = None
 	waiting_for_pillage = []
+	version = None # 0 for vanilla ; 1 for 2020 ; 2 : Despair
 
 	## Initialisation of the game
-	def __init__(self,l):
+	def __init__(self,l,ver):
+
+		self.version = ver
 
 		## Creating the players objects
 		newplayer = None
@@ -114,11 +118,11 @@ class Game:
 				rand_int = random.randint(1,2)
 				if rand_int == 2:
 					self.char_pool[i] = character_list.lothaire2
-			if self.char_pool[i] == character_list.bob:
+			if self.char_pool[i] == character_list.bob and self.version != 0:
 				rand_int = random.randint(1,2)
 				if rand_int == 2:
 					self.char_pool[i] = character_list.cartouche
-			if self.char_pool[i] == character_list.agnes:
+			if self.char_pool[i] == character_list.agnes and self.version != 0:
 				rand_int = random.randint(1,2)
 				if rand_int == 2:
 					self.char_pool[i] = character_list.angus
@@ -134,6 +138,8 @@ class Game:
 				self.daniel_id = i
 			if self.char_pool[i] == character_list.varimathras:
 				self.varimathras_id = i
+			if self.char_pool[i] == character_list.despair:
+				self.despair_id = i
 
 		self.char_pool=[]
 
@@ -144,6 +150,8 @@ class Game:
 		else:
 			self.vision_pile = vision.vision_pool_default.copy()
 
+		self.light_pile = light.light_pool.copy()
+		self.darkness_pile = darkness.darkness_pool.copy()
 
 		## Shuffling the game map
 		random.shuffle(self.gamemap)
@@ -201,7 +209,7 @@ class Game:
 				res=res+'> '+'Personnage : '+self.playerlist[i].getCharNameColor()+'\n'
 			if self.playerlist[i].getCharacter() == character_list.neo and self.neo_revenge_activated and self.isAlive(i):
 				res = res+'> Cible : '+self.playerlist[self.neo_target].getName()+' '+str(self.playerlist[self.neo_target].getEmoji())+'\n'
-			if self.playerlist[i].getCharacter() == character_list.daniel and self.daniel_allegiance != None and self.isAlive(i):
+			if self.playerlist[i].getCharacter() == character_list.daniel and self.daniel_allegiance != None and self.isAlive(i) and self.version != 0:
 				team = ''
 				if self.daniel_allegiance == 'Hunter':
 					team = 'Hunters :blue_circle:'
@@ -390,7 +398,7 @@ class Game:
 		return self.playerlist[i].hasItem(item)
 
 	def spearAvailable(self,i):
-		return (self.hasItem(i,items.spear) and self.isRevealed(i) and (self.isHunter(i) or self.getCharacter(i) == character_list.metamorph))
+		return (self.hasItem(i,items.spear) and self.isRevealed(i) and (self.isHunter(i) or (self.getCharacter(i) == character_list.metamorph and self.version != 0)))
 
 	def isAbilityAvailable(self,i):
 		return self.playerlist[i].isAbilityAvailable()
@@ -430,7 +438,8 @@ class Game:
 				all_shadows_dead = False
 			if self.playerlist[i].isHunter():
 				exists_hunter = True
-		return (exists_hunter and all_shadows_dead)
+		despair_condition = self.despair_id == None or (not self.playerlist[self.despair_id].isAlive()) or (not self.playerlist[self.despair_id].isRevealed())
+		return (exists_hunter and all_shadows_dead and despair_condition)
 
 	def didShadowsWin(self):
 		exists_shadow = False
@@ -440,7 +449,8 @@ class Game:
 				all_hunters_dead = False
 			if self.playerlist[i].isShadow():
 				exists_shadow = True
-		return (exists_shadow and all_hunters_dead)
+		despair_condition = self.despair_id == None or (not self.playerlist[self.despair_id].isAlive()) or (not self.playerlist[self.despair_id].isRevealed())
+		return (exists_shadow and all_hunters_dead and despair_condition)
 
 
 	def didPlayerWin(self,i):
@@ -465,7 +475,12 @@ class Game:
 						   )
 
 		elif self.playerlist[i].getCharacter() == character_list.bob:
-			return len(self.lightInventory(i))+len(self.darknessInventory(i)) >= 4
+			required = 0
+			if self.version == 0:
+				required = 5
+			elif self.version != 0:
+				required = 4
+			return len(self.lightInventory(i))+len(self.darknessInventory(i)) >= required
 
 		elif self.playerlist[i].getCharacter() == character_list.cartouche:
 			return len(self.lightInventory(i))+len(self.darknessInventory(i)) >= 4
@@ -487,7 +502,7 @@ class Game:
 			shadows_side = (self.daniel_allegiance == 'Shadow' and all_hunters_dead)
 			second_condition = self.first_blood and self.playerlist[i].isAlive() and (hunters_side or shadows_side)
 			third_condition = self.first_blood and self.playerlist[i].isAlive() and all_shadows_dead
-			return first_condition or second_condition
+			return (self.version != 0 and (first_condition or second_condition)) or (self.version == 0 and (first_condition or third_condition))
 
 		elif self.playerlist[i].getCharacter() == character_list.catherine:
 			nb_alive = 0
@@ -498,6 +513,14 @@ class Game:
 
 		elif self.playerlist[i].getCharacter() == character_list.neo:
 			return (self.game_ended and (not self.neo_revenge_activated) and self.playerlist[(i-1)%self.nb_players()].isAlive()) or (self.neo_revenge_activated and self.playerlist[i].isAlive() and (not self.playerlist[self.neo_target].isAlive()))
+
+		elif self.playerlist[i].getCharacter() == character_list.despair:
+			nb_alive = 0
+			for j in range(0,self.nb_players()):
+				if self.playerlist[j].isAlive():
+					nb_alive = nb_alive+1
+			return self.playerlist[i].isAlive() and nb_alive <= 1
+
 		else:
 			return False
 
@@ -529,7 +552,7 @@ class Game:
 						one_hunter_dead = True
 
 				# If Daniel has not chosen a team yet, then we decide accordingly to the deaths
-				if self.daniel_allegiance == None:
+				if self.daniel_allegiance == None and self.version != 0:
 					if one_hunter_dead and not one_shadow_dead:
 						self.daniel_allegiance = 'Hunter'
 						ret_str = ret_str+self.getName(self.daniel_id)+' '+str(self.getEmoji(self.daniel_id))+' joue désormais **avec les Hunters** :blue_circle:'+'\n'
