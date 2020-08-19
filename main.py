@@ -460,7 +460,10 @@ class Game:
 			return self.didHuntersWin()
 
 		elif self.playerlist[i].getCharacter() == character_list.allie:
-			return self.game_ended and self.playerlist[i].isAlive()
+			if self.version <= 1:
+				return self.game_ended and self.playerlist[i].isAlive()
+			else:
+				return self.game_ended and self.playerlist[i].isAlive() and (not self.playerlist[i].isRevealed())
 
 		elif self.playerlist[i].getCharacter() == character_list.agnes:
 			return self.game_ended and ( 
@@ -817,6 +820,11 @@ class Game:
 					ret_str = ret_str+'> Subir **0** Blessure (Absorbé : 1) \U0001FA78 (Mentir)\n'
 				else:
 					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78 (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				if self.hasItem(j,items.robe):
+					ret_str = ret_str+'> Subir **0** Blessure (Absorbé : 1) \U0001FA78 (Mentir)\n'
+				else:
+					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78 (Mentir)\n'
 			elif not self.isHunter(j):
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
 			elif self.hasGregorShield(j):
@@ -834,6 +842,11 @@ class Game:
 				else:
 					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78\n'
 				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				if self.hasItem(j,items.robe):
+					ret_str = ret_str+'> Subir **0** Blessure (Absorbé : 1) \U0001FA78 (Mentir)\n'
+				else:
+					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78 (Mentir)\n'
 			elif not self.isShadow(j):
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
 			elif self.hasGregorShield(j):
@@ -851,6 +864,11 @@ class Game:
 				else:
 					ret_str = ret_str+'> Subir **2** Blessures \U0001F4A3\n'
 				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				if self.hasItem(j,items.robe):
+					ret_str = ret_str+'> Subir **1** Blessure (Absorbé : 1) \U0001F4A3 (Mentir)\n'
+				else:
+					ret_str = ret_str+'> Subir **2** Blessures \U0001F4A3 (Mentir)\n'
 			elif not self.isShadow(j):
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
 			elif self.hasGregorShield(j):
@@ -864,6 +882,13 @@ class Game:
 			ret_str = ''
 			if self.getCharacter(j) == character_list.metamorph:
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
+				if self.playerlist[j].wounds > 0:
+					ret_str = ret_str+'> Soigner **1** Blessure \U0001F489 (Mentir)\n'
+				elif self.hasItem(j,items.robe):
+					ret_str = ret_str+'> Subir **0** Blessure (Absorbé : 1) \U0001FA78 (Mentir)\n'
+				else:
+					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78 (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
 				if self.playerlist[j].wounds > 0:
 					ret_str = ret_str+'> Soigner **1** Blessure \U0001F489 (Mentir)\n'
 				elif self.hasItem(j,items.robe):
@@ -890,7 +915,14 @@ class Game:
 					ret_str = ret_str+'> Subir **0** Blessure (Absorbé : 1) \U0001FA78\n'
 				else:
 					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78\n'
-				ret_str = ret_str+'> Rien ne se passe \u274C\n'
+				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				if self.playerlist[j].wounds > 0:
+					ret_str = ret_str+'> Soigner **1** Blessure \U0001F489 (Mentir)\n'
+				elif self.hasItem(j,items.robe):
+					ret_str = ret_str+'> Subir **0** Blessure (Absorbé : 1) \U0001FA78 (Mentir)\n'
+				else:
+					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78 (Mentir)\n'
 			elif not self.isShadow(j):
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
 			elif self.playerlist[j].wounds > 0:
@@ -912,6 +944,8 @@ class Game:
 					ret_str = ret_str+'> Subir **0** Blessure (Absorbé : 1) \U0001FA78 (Mentir)\n'
 				else:
 					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78 (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
 			elif not self.isNeutral(j):
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
 			elif self.playerlist[j].wounds > 0:
@@ -931,6 +965,8 @@ class Game:
 				else:
 					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78\n'
 				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
 			elif not ((self.getCharacter(j)).getHP() <= 11):
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
 			elif self.hasGregorShield(j):
@@ -944,6 +980,11 @@ class Game:
 			ret_str = ''
 			if self.getCharacter(j) == character_list.metamorph:
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
+				if self.hasItem(j,items.robe):
+					ret_str = ret_str+'> Subir **1** Blessure (Absorbé : 1) \U0001F4A3 (Mentir)\n'
+				else:
+					ret_str = ret_str+'> Subir **2** Blessures \U0001F4A3 (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
 				if self.hasItem(j,items.robe):
 					ret_str = ret_str+'> Subir **1** Blessure (Absorbé : 1) \U0001F4A3 (Mentir)\n'
 				else:
@@ -967,6 +1008,13 @@ class Game:
 					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78\n'
 					ret_str = ret_str + gear_str
 				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				if self.hasItem(j,items.robe):
+					ret_str = ret_str+'> Subir **0** Blessure (Absorbé : 1) \U0001FA78  (Mentir)\n'
+					ret_str = ret_str + gear_str_lie
+				else:
+					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78  (Mentir)\n'
+					ret_str = ret_str + gear_str_lie
 			elif not (self.isHunter(j) or self.isShadow(j)):
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
 			elif self.hasGregorShield(j):
@@ -989,6 +1037,8 @@ class Game:
 				else:
 					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78 (Mentir)\n'
 					ret_str = ret_str + gear_str_lie
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
 			elif not (self.isHunter(j) or self.isNeutral(j)):
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
 			elif self.hasGregorShield(j):
@@ -1011,6 +1061,8 @@ class Game:
 					ret_str = ret_str+'> Subir **1** Blessure \U0001FA78\n'
 					ret_str = ret_str + gear_str
 				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				ret_str = ret_str+'> Rien ne se passe \u274C (Mentir)\n'
 			elif not (self.isShadow(j) or self.isNeutral(j)):
 				ret_str = ret_str+'> Rien ne se passe \u274C\n'
 			elif self.hasGregorShield(j):
@@ -1032,6 +1084,8 @@ class Game:
 			if self.getCharacter(j) == character_list.metamorph:
 				await message.add_reaction('\u274C')
 				await message.add_reaction('\U0001FA78')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				await message.add_reaction('\U0001FA78')
 			elif not self.isHunter(j):
 				await message.add_reaction('\u274C')
 			else:
@@ -1040,6 +1094,8 @@ class Game:
 			if self.getCharacter(j) == character_list.metamorph:
 				await message.add_reaction('\U0001FA78')
 				await message.add_reaction('\u274C')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				await message.add_reaction('\U0001FA78')
 			elif not self.isShadow(j):
 				await message.add_reaction('\u274C')
 			else:
@@ -1048,6 +1104,8 @@ class Game:
 			if self.getCharacter(j) == character_list.metamorph:
 				await message.add_reaction('\U0001F4A3')
 				await message.add_reaction('\u274C')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				await message.add_reaction('\U0001F4A3')
 			elif not self.isShadow(j):
 				await message.add_reaction('\u274C')
 			else:
@@ -1056,6 +1114,11 @@ class Game:
 			ret_str = ''
 			if self.getCharacter(j) == character_list.metamorph:
 				await message.add_reaction('\u274C')
+				if self.playerlist[j].wounds > 0:
+					await message.add_reaction('\U0001F489')
+				else:
+					await message.add_reaction('\U0001FA78')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
 				if self.playerlist[j].wounds > 0:
 					await message.add_reaction('\U0001F489')
 				else:
@@ -1074,6 +1137,11 @@ class Game:
 				else:
 					await message.add_reaction('\U0001FA78')
 				await message.add_reaction('\u274C')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				if self.playerlist[j].wounds > 0:
+					await message.add_reaction('\U0001F489')
+				else:
+					await message.add_reaction('\U0001FA78')
 			elif not self.isShadow(j):
 				await message.add_reaction('\u274C')
 			elif self.playerlist[j].wounds > 0:
@@ -1088,6 +1156,8 @@ class Game:
 					await message.add_reaction('\U0001F489')
 				else:
 					await message.add_reaction('\U0001FA78')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				await message.add_reaction('\u274C')
 			elif not self.isNeutral(j):
 				await message.add_reaction('\u274C')
 			elif self.playerlist[j].wounds > 0:
@@ -1098,6 +1168,8 @@ class Game:
 			if self.getCharacter(j) == character_list.metamorph:
 				await message.add_reaction('\U0001FA78')
 				await message.add_reaction('\u274C')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				await message.add_reaction('\u274C')
 			elif not( (self.getCharacter(j)).getHP() <= 11):
 				await message.add_reaction('\u274C')
 			else:
@@ -1106,6 +1178,8 @@ class Game:
 			ret_str = ''
 			if self.getCharacter(j) == character_list.metamorph:
 				await message.add_reaction('\u274C')
+				await message.add_reaction('\U0001F4A3')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
 				await message.add_reaction('\U0001F4A3')
 			elif not ((self.getCharacter(j)).getHP() >= 12):
 				await message.add_reaction('\u274C')
@@ -1120,6 +1194,13 @@ class Game:
 				for k in range(0,len(self.darknessInventory(j))):
 					await message.add_reaction(((self.darknessInventory(j))[k]).getEmoji())
 				await message.add_reaction('\u274C')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				if not(self.getCharacter(self.turn_of) == character_list.cartouche and self.isRevealed(self.turn_of) and self.isAbilityAvailable(self.turn_of) and (len(self.lightInventory(j)) + len(self.darknessInventory(j)) > 0)):
+					await message.add_reaction('\U0001FA78')
+				for k in range(0,len(self.lightInventory(j))):
+					await message.add_reaction(((self.lightInventory(j))[k]).getEmoji())
+				for k in range(0,len(self.darknessInventory(j))):
+					await message.add_reaction(((self.darknessInventory(j))[k]).getEmoji())
 			elif not (self.isHunter(j) or self.isShadow(j)):
 				await message.add_reaction('\u274C')
 			else:
@@ -1138,6 +1219,8 @@ class Game:
 					await message.add_reaction(((self.lightInventory(j))[k]).getEmoji())
 				for k in range(0,len(self.darknessInventory(j))):
 					await message.add_reaction(((self.darknessInventory(j))[k]).getEmoji())
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
+				await message.add_reaction('\u274C')
 			elif not (self.isHunter(j) or self.isNeutral(j)):
 				await message.add_reaction('\u274C')
 			else:
@@ -1155,6 +1238,8 @@ class Game:
 					await message.add_reaction(((self.lightInventory(j))[k]).getEmoji())
 				for k in range(0,len(self.darknessInventory(j))):
 					await message.add_reaction(((self.darknessInventory(j))[k]).getEmoji())
+				await message.add_reaction('\u274C')
+			elif self.getCharacter(j) == character_list.allie and self.version == 2:
 				await message.add_reaction('\u274C')
 			elif not (self.isNeutral(j) or self.isShadow(j)):
 				await message.add_reaction('\u274C')

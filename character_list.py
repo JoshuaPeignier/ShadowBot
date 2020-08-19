@@ -132,6 +132,11 @@ def update_version(nb):
 		bob.abilityText = "*Braquage (Conditionné)* | Si vous tuez un personnage, vous récupérez tous ses équipements."
 		bob.totalHealth = 10
 
+		allie.wincon = "Être en vie à la fin de la partie."
+		allie.abilityText = "*Régénération (Activable, Utilisation unique)* | A n'importe quel moment, vous pouvez soigner toutes vos Blessures."
+		allie.uniqueUse = True
+		allie.choice = True
+
 		hunter_list=[gregor,georges,franklin,fuka,emi,ellen]
 		shadow_list=[werewolf,lich,vampire,valkyrie,metamorph,mummy]
 		neutral_list=[daniel,catherine,allie,agnes,bob]
@@ -150,6 +155,11 @@ def update_version(nb):
 		bob.abilityText = "*Braquage (Conditionné)* | Si vous piochez une carte Lumière ou Ténèbres à effet immédiat, vous pouvez piocher une autre carte du même type (une fois par tour)."
 		bob.totalHealth = 11
 
+		allie.wincon = "Être en vie à la fin de la partie."
+		allie.abilityText = "*Régénération (Activable, Utilisation unique)* | A n'importe quel moment, vous pouvez soigner toutes vos Blessures."
+		allie.uniqueUse = True
+		allie.choice = True
+
 		hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
 		shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
 		neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan]
@@ -167,6 +177,11 @@ def update_version(nb):
 		bob.wincon = "Posséder 4 cartes équipement ou plus."
 		bob.abilityText = "*Braquage (Conditionné)* | Si vous piochez une carte Lumière ou Ténèbres à effet immédiat, vous pouvez piocher une autre carte du même type (une fois par tour)."
 		bob.totalHealth = 11
+
+		allie.wincon = "Être en vie et non révélé quand la partie se termine."
+		allie.abilityText = "*Campagne électorale* | Lorsqu'un autre joueur vous envoie une carte vision, vous êtes obligé d'y mentir."
+		allie.uniqueUse = False
+		allie.choice = False
 
 		hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
 		shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]

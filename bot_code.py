@@ -3110,7 +3110,7 @@ class ShadowClient(discord.Client):
 						await self.last_choice_message.add_reaction('\u274C')
 
 				# Power of Allie
-				elif self.game.getCharacter(pid) == character_list.allie:
+				elif self.game.getCharacter(pid) == character_list.allie and self.version <= 1:
 					self.game.consumeAbility(pid)
 					heal_str = self.game.heal(pid,pid,14,0)
 					current_message = await message.channel.send(heal_str)
@@ -3338,7 +3338,7 @@ class ShadowClient(discord.Client):
 				await message.channel.send('Voici les possibilités :\n'
 					+'**'+self.prefix+'set version** *vanilla* : jeu de base et l\'unique extension officielle (moins quelques personnages).\n'
 					+'**'+self.prefix+'set version** *2020* : version du 1er août 2020 (1.1.4) .\n'
-					+'**'+self.prefix+'set version** *Despair* : version du patch de Despair (2.0).\n')
+					+'**'+self.prefix+'set version** *Despair* : version du patch de Despair (2.0 : Despair, Allie menteuse).\n')
 			elif message.content == self.prefix+'set version vanilla':
 				self.version = 0
 				await message.add_reaction('\U0001F197')
