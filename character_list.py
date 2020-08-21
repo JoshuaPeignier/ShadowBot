@@ -9,8 +9,7 @@ fuka = characters.Character("Fu-Ka",12,"Hunter",":blue_circle:","Tous les person
 emi = characters.Character("Emi",12,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Téléportation (Conditionné)* | Au début de votre tour, vous pouvez choisir de vous déplacer en lançant les dés ou bien vous déplacer directement sur un des lieux adjacents à la vôtre.",False,True)
 ellen = characters.Character("Ellen",10,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Exorcisme (Activable, Utilisation unique)* | Au début de votre tour, choisissez un joueur ; son pouvoir disparaît jusqu'à la fin de la partie. De plus, si c'est un Shadow autre que Métamorphe, vous vous soignez 3 Blessures, et il est forcé de révéler son identité si elle ne l\'était pas déjà.",True,True)
 erik = characters.Character("Erik",10,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Tranquilité (Activable, Utilisation unique)* | Au début de votre tour et au début de votre prochain tour, vous pouvez choisir entre vous soigner 3 Blessures, ou soigner 2 Blessures à au plus 3 Personnages de votre choix sur votre secteur.",True,True)
-lothaire = characters.Character("Lothaire",14,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Blocage (Passif)* | Lorsque vous subissez une attaque, lancez les deux dés et calculez le résultat comme pour un jet d'attaque. Si le résultat de votre jet est strictement supérieur au résultat du jet de l'attaque adverse, vous ne subissez aucune Blessure.",False,True)
-lothaire2 = characters.Character("Lothaire II",14,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Blocage (Passif)* | Lorsque vous subissez une attaque, lancez les deux dés et calculez le résultat comme pour un jet d'attaque. Si la somme de votre jet et du jet d'attaque adverse vaut au moins 6, vous ne subissez aucune Blessure.",False,True)
+lothaire = characters.Character("Lothaire",14,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Blocage (Passif)* | Lorsque vous subissez une attaque, lancez les deux dés et calculez le résultat comme pour un jet d'attaque. Si votre jet fait au moins 2 de plus que le jet adverse, vous ne subissez aucune Blessure.",False,True)
 marth = characters.Character("Marth",12,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Perforation (Passif)* | Lorsque vous attaquez un joueur situé sur un lieu adjacent au vôtre et ne faites pas 0, vous lui infligez une Blessure supplémentaire.",False,True)
 link = characters.Character("Link",12,"Hunter",":blue_circle:","Tous les personnages Shadows sont morts.","*Bombe glitchée (Conditionné)* | Au début de votre tour, vous pouvez subir une Blessure pour lancer deux fois les dés pour votre déplacement, et choisir le résultat.",False,True)
 
@@ -49,7 +48,6 @@ char_dictionary = {
 "Ellen": ellen,
 "Erik": erik,
 "Lothaire": lothaire,
-"Lothaire II": lothaire2,
 "Marth": marth,
 "Link": link,
 "Loup-Garou": werewolf,
@@ -142,29 +140,6 @@ def update_version(nb):
 		neutral_list=[daniel,catherine,allie,agnes,bob]
 
 	elif nb == 1:
-
-		ellen.abilityText = "*Exorcisme (Activable, Utilisation unique)* | Au début de votre tour, choisissez un joueur ; son pouvoir disparaît jusqu'à la fin de la partie. De plus, si c'est un Shadow autre que Métamorphe, vous vous soignez 3 Blessures, et il est forcé de révéler son identité si elle ne l\'était pas déjà."
-		emi.totalHealth = 12
-
-		vampire.abilityText = "*Morsure (Passif)* | Si vous attaquez un joueur et lui infligez des Blessures, soignez une de vos Blessures."
-
-		daniel.wincon = "Être le premier à mourir OU être en vie quand tous les personnages Hunters ou Shadows (le camp opposé au premier mort) sont morts."
-		daniel.abilityText = "*Désespoir* | Dès qu'un autre personnage meurt, votre identité est automatiquement révélée. Si le premier mort est un Hunter, vous devez tuer les Shadows, et inversement. Si c'est un Neutre, ou si un Shadow et un Hunter meurent en premier en même temps, vous choisissez votre camp."
-
-		bob.wincon = "Posséder 4 cartes équipement ou plus."
-		bob.abilityText = "*Braquage (Conditionné)* | Si vous piochez une carte Lumière ou Ténèbres à effet immédiat, vous pouvez piocher une autre carte du même type (une fois par tour)."
-		bob.totalHealth = 11
-
-		allie.wincon = "Être en vie à la fin de la partie."
-		allie.abilityText = "*Régénération (Activable, Utilisation unique)* | A n'importe quel moment, vous pouvez soigner toutes vos Blessures."
-		allie.uniqueUse = True
-		allie.choice = True
-
-		hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
-		shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
-		neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan]
-
-	elif nb == 2:
 
 		ellen.abilityText = "*Exorcisme (Activable, Utilisation unique)* | Au début de votre tour, choisissez un joueur ; son pouvoir disparaît jusqu'à la fin de la partie. De plus, si c'est un Shadow autre que Métamorphe, vous vous soignez 3 Blessures, et il est forcé de révéler son identité si elle ne l\'était pas déjà."
 		emi.totalHealth = 12

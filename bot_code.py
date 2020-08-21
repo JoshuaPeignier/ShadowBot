@@ -29,7 +29,7 @@ class ShadowClient(discord.Client):
 	future_stored = None
 	turn_phase = -1 # -2 : when got a 7 or the compass and blocked in the movement ; -1: AIDS turn and Default value ; 0: beginning, before moving phase ; 1: Moving and applying the effect ; 2: Attacking ; 3: Ending the turn
 	quotes_on = True
-	version = 1 # 0 : vanilla ; 1 : August 2020 ; 2 : Despair
+	version = 1 # 0 : vanilla ; 1 : Despair
 	nsa = False
 	nsa_user = None
 
@@ -69,8 +69,6 @@ class ShadowClient(discord.Client):
 		if self.version == 0:
 			await self.main_channel.send('**Version : vanilla**')
 		elif self.version == 1:
-			await self.main_channel.send('**Version : 2020**')
-		elif self.version == 2:
 			await self.main_channel.send('**Version : Despair**')
 		await self.main_channel.send('**La partie va commencer dans**')
 		await self.count([self.main_channel],5)
@@ -731,19 +729,11 @@ class ShadowClient(discord.Client):
 			block_value = abs(self.game.d6()-self.game.d4())	
 			current_message = await self.main_channel.send(self.game.getName(target_id)+' '+str(self.game.getEmoji(target_id))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
-			if block_value > dice_value and dice_value > 0:
+			if block_value > dice_value+1 and dice_value > 0:
 				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,11,self.quotes_on)
 			else:
 				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0,self.quotes_on)
-		# Lothaire II can try to block
-		elif self.game.getCharacter(target_id) == character_list.lothaire2 and self.game.isRevealed(target_id) and self.game.isAbilityAvailable(target_id):
-			block_value = abs(self.game.d6()-self.game.d4())	
-			current_message = await self.main_channel.send(self.game.getName(target_id)+' '+str(self.game.getEmoji(target_id))+' a fait '+str(block_value)+'.')
-			await self.add_message_to_buffer(current_message)
-			if (block_value + dice_value) >= 6 and dice_value > 0:
-				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,11,self.quotes_on)
-			else:
-				damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0,self.quotes_on)
+
 		else:
 			damage_str = self.game.damage(self.game.turn_of,target_id,dice_value,0,self.quotes_on)
 
@@ -783,19 +773,11 @@ class ShadowClient(discord.Client):
 			block_value = abs(self.game.d6()-self.game.d4())	
 			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_1)+' '+str(self.game.getEmoji(self.game.mograine_target_1))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
-			if block_value > dice_value and dice_value > 0:
+			if block_value > dice_value+1 and dice_value > 0:
 				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,11,self.quotes_on)
 			else:
 				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0,self.quotes_on)
-		# Lothaire II can try to block
-		elif self.game.getCharacter(self.game.mograine_target_1) == character_list.lothaire2 and self.game.isRevealed(self.game.mograine_target_1) and self.game.isAbilityAvailable(self.game.mograine_target_1):
-			block_value = abs(self.game.d6()-self.game.d4())	
-			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_1)+' '+str(self.game.getEmoji(self.game.mograine_target_1))+' a fait '+str(block_value)+'.')
-			await self.add_message_to_buffer(current_message)
-			if block_value + dice_value >= 6 and dice_value > 0:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,11,self.quotes_on)
-			else:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0,self.quotes_on)
+
 		else:
 			damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_1,dice_value,0,self.quotes_on)
 
@@ -809,19 +791,11 @@ class ShadowClient(discord.Client):
 			block_value = abs(self.game.d6()-self.game.d4())	
 			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_2)+' '+str(self.game.getEmoji(self.game.mograine_target_2))+' a fait '+str(block_value)+'.')
 			await self.add_message_to_buffer(current_message)
-			if block_value > dice_value and dice_value > 0:
+			if block_value > dice_value+1 and dice_value > 0:
 				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,14,self.quotes_on)
 			else:
 				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13,self.quotes_on)
-		# Lothaire II can try to block
-		elif self.game.getCharacter(self.game.mograine_target_2) == character_list.lothaire2 and self.game.isRevealed(self.game.mograine_target_2) and self.game.isAbilityAvailable(self.game.mograine_target_2):
-			block_value = abs(self.game.d6()-self.game.d4())	
-			current_message = await self.main_channel.send(self.game.getName(self.game.mograine_target_2)+' '+str(self.game.getEmoji(self.game.mograine_target_2))+' a fait '+str(block_value)+'.')
-			await self.add_message_to_buffer(current_message)
-			if block_value + dice_value >= 6 and dice_value > 0:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,14,self.quotes_on)
-			else:
-				damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13,self.quotes_on)
+
 		else:
 			damage_str = self.game.damage(self.game.turn_of,self.game.mograine_target_2,dice_value,13,self.quotes_on)
 
@@ -859,19 +833,11 @@ class ShadowClient(discord.Client):
 					block_value = abs(self.game.d6()-self.game.d4())	
 					current_message = await self.main_channel.send(self.game.getName(i)+' '+str(self.game.getEmoji(i))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
-					if block_value > dice_value and dice_value > 0:
+					if block_value > dice_value+1 and dice_value > 0:
 						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11,self.quotes_on)
 					else:
 						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0,self.quotes_on)
-				# Lothaire can try to block
-				elif self.game.getCharacter(i) == character_list.lothaire2 and self.game.isRevealed(i) and self.game.isAbilityAvailable(i):
-					block_value = abs(self.game.d6()-self.game.d4())	
-					current_message = await self.main_channel.send(self.game.getName(i)+' '+str(self.game.getEmoji(i))+' a fait '+str(block_value)+'.')
-					await self.add_message_to_buffer(current_message)
-					if block_value + dice_value >= 6 and dice_value > 0:
-						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11,self.quotes_on)
-					else:
-						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0,self.quotes_on)
+
 				else:
 					damage_str = self.game.damage(self.game.turn_of,i,dice_value,0,self.quotes_on)
 
@@ -916,19 +882,11 @@ class ShadowClient(discord.Client):
 					block_value = abs(self.game.d6()-self.game.d4())	
 					current_message = await self.main_channel.send(self.game.getName(i)+' '+str(self.game.getEmoji(i))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
-					if block_value > dice_value and dice_value > 0:
+					if block_value > dice_value+1 and dice_value > 0:
 						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11,self.quotes_on)
 					else:
 						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0,self.quotes_on)
-				# Lothaire can try to block
-				elif self.game.getCharacter(i) == character_list.lothaire2 and self.game.isRevealed(i) and self.game.isAbilityAvailable(i):
-					block_value = abs(self.game.d6()-self.game.d4())	
-					current_message = await self.main_channel.send(self.game.getName(i)+' '+str(self.game.getEmoji(i))+' a fait '+str(block_value)+'.')
-					await self.add_message_to_buffer(current_message)
-					if block_value + dice_value >= 6 and dice_value > 0:
-						damage_str = self.game.damage(self.game.turn_of,i,dice_value,11,self.quotes_on)
-					else:
-						damage_str = self.game.damage(self.game.turn_of,i,dice_value,0,self.quotes_on)
+
 				else:
 					damage_str = self.game.damage(self.game.turn_of,i,dice_value,0,self.quotes_on)
 
@@ -2027,19 +1985,11 @@ class ShadowClient(discord.Client):
 					block_value = abs(self.game.d6()-self.game.d4())	
 					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' a fait '+str(block_value)+'.')
 					await self.add_message_to_buffer(current_message)
-					if block_value > dice_value and dice_value > 0:
+					if block_value > dice_value+1 and dice_value > 0:
 						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,16,self.quotes_on)
 					else:
 						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15,self.quotes_on)
-				# Lothaire II can try to block
-				elif self.game.getCharacter(self.game.turn_of) == character_list.lothaire2 and self.game.isRevealed(self.game.turn_of) and self.game.isAbilityAvailable(self.game.turn_of):
-					block_value = abs(self.game.d6()-self.game.d4())	
-					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' a fait '+str(block_value)+'.')
-					await self.add_message_to_buffer(current_message)
-					if block_value + dice_value >= 6 and dice_value > 0:
-						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,16,self.quotes_on)
-					else:
-						damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15,self.quotes_on)
+
 				else:
 					damage_str = self.game.damage(self.game.werewolf_id,self.game.turn_of,dice_value,15,self.quotes_on)
 
@@ -2895,9 +2845,7 @@ class ShadowClient(discord.Client):
 			if self.version == 0:
 				ret_str = 'Hunters :blue_circle: : Ellen, Emi, Franklin, Fu-Ka, Georges, Gregor\n'+'Shadows :red_circle: : Métamorphe, Momie, Liche, Loup-Garou, Valkyrie, Vampire\n'+'Neutres :yellow_circle: : Allie, Agnès, Bob, Catherine, Daniel\n'
 			elif self.version == 1:
-				ret_str = 'Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Lothaire/Lothaire II, Marth\n' +'Shadows :red_circle: : Charles, Ganondorf, Majora, Métamorphe, Mograine, Momie, Liche, Loup-Garou, Valkyrie, Vampire, Varimathras\n'+'Neutres :yellow_circle: : Allie, Agnès/Angus, Bob/Cartouche, Bryan, Catherine, Daniel, Neo\n'
-			elif self.version == 2:
-				ret_str = 'Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Lothaire/Lothaire II, Marth\n'+'Shadows :red_circle: : Charles, Ganondorf, Majora, Métamorphe, Mograine, Momie, Liche, Loup-Garou, Valkyrie, Vampire, Varimathras\n'+'Neutres :yellow_circle: : Allie, Agnès/Angus, Bob/Cartouche, Bryan, Catherine, Daniel, Despair, Neo\n'
+				ret_str = 'Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Lothaire, Marth\n'+'Shadows :red_circle: : Charles, Ganondorf, Majora, Métamorphe, Mograine, Momie, Liche, Loup-Garou, Valkyrie, Vampire, Varimathras\n'+'Neutres :yellow_circle: : Allie, Agnès/Angus, Bob/Cartouche, Bryan, Catherine, Daniel, Despair, Neo\n'
 			current_message = await message.channel.send(ret_str)
 			await self.add_message_to_buffer(message)
 			await self.add_message_to_buffer(current_message)
@@ -2973,8 +2921,9 @@ class ShadowClient(discord.Client):
 					+'\n*Configuration du bot*\n'					
 					+'**'+self.prefix+'intro** : présente le bot.\n'
 					+'**'+self.prefix+'setSHprefix** *caractère* : modifie le préfixe des commandes par le caractère indiqué (! par défaut).\n'
-					+'**'+self.prefix+'set** quotes on/off : active/désactive les citations en jeu.\n'
-					+'**'+self.prefix+'set** version *nom_version* : change la version du jeu pour celle spécifiée (*vanilla*, *2020*, *Despair*).\n'
+					+'**'+self.prefix+'set quotes** on/off : active/désactive les citations en jeu.\n'
+					+'**'+self.prefix+'set version** *nom_version* : change la version du jeu pour celle spécifiée (*vanilla*, *Despair*).\n'
+					+'**'+self.prefix+'vote** *question* : organise un référendum pour collecter les avis sur la question spécifiée.\n'
 					)
 			await self.add_message_to_buffer(message)
 			await self.add_message_to_buffer(current_message)
@@ -3110,7 +3059,7 @@ class ShadowClient(discord.Client):
 						await self.last_choice_message.add_reaction('\u274C')
 
 				# Power of Allie
-				elif self.game.getCharacter(pid) == character_list.allie and self.version <= 1:
+				elif self.game.getCharacter(pid) == character_list.allie and self.version == 0:
 					self.game.consumeAbility(pid)
 					heal_str = self.game.heal(pid,pid,14,0)
 					current_message = await message.channel.send(heal_str)
@@ -3337,26 +3286,19 @@ class ShadowClient(discord.Client):
 			elif message.content == self.prefix+'set version':
 				await message.channel.send('Voici les possibilités :\n'
 					+'**'+self.prefix+'set version** *vanilla* : jeu de base et l\'unique extension officielle (moins quelques personnages).\n'
-					+'**'+self.prefix+'set version** *2020* : version du 1er août 2020 (1.1.4) .\n'
-					+'**'+self.prefix+'set version** *Despair* : version du patch de Despair (2.0 : Despair, Allie menteuse).\n')
+					+'**'+self.prefix+'set version** *Despair* : version 2.0\n')
 			elif message.content == self.prefix+'set version vanilla':
 				self.version = 0
 				await message.add_reaction('\U0001F197')
 				character_list.update_version(0)
 				light.update_version(0)
 				darkness.update_version(0)
-			elif message.content == self.prefix+'set version 2020':
+			elif message.content == self.prefix+'set version Despair':
 				self.version = 1
 				await message.add_reaction('\U0001F197')
 				character_list.update_version(1)
 				light.update_version(1)
 				darkness.update_version(1)
-			elif message.content == self.prefix+'set version Despair':
-				self.version = 2
-				await message.add_reaction('\U0001F197')
-				character_list.update_version(2)
-				light.update_version(2)
-				darkness.update_version(2)
 			else:
 				await message.add_reaction('\U0001F6AB')
 
@@ -3419,13 +3361,22 @@ class ShadowClient(discord.Client):
 				await self.add_message_to_buffer(message)
 				await self.add_message_to_buffer(current_message)
 			elif self.version == 1:
-				current_message = quit_message = await message.channel.send('Version actuelle : 2020.')
-				await self.add_message_to_buffer(message)
-				await self.add_message_to_buffer(current_message)
-			elif self.version == 2:
 				current_message = quit_message = await message.channel.send('Version actuelle : Despair.')
 				await self.add_message_to_buffer(message)
 				await self.add_message_to_buffer(current_message)
+
+		elif message.content.startswith(self.prefix+'vote'):
+			# If a game is already launched, then error
+			if prelaunch.launched():
+				current_message = await message.channel.send('Vous ne pouvez pas lancer de vote en cours de partie')
+				await self.add_message_to_buffer(message)
+				await self.add_message_to_buffer(current_message)
+			elif len(message.content) == len(self.prefix)+4:
+				await message.channel.send('Syntaxe : **'+self.prefix+'vote** *question*')
+			else:
+				vote_message = await message.channel.send(message.content[len(self.prefix)+5:len(message.content)])
+				await vote_message.add_reaction('\u2611')
+				await vote_message.add_reaction('\u274C')
 
 		# Someone posts anything else
 		else:
