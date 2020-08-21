@@ -2931,7 +2931,7 @@ class ShadowClient(discord.Client):
 		elif message.content == self.prefix+'last':
 			if (not self.nsa):
 				await message.channel.send('Non')
-			else:
+			elif message.author == self.nsa_user:
 				chan = self.nsa_user.dm_channel
 				ret_str = ''
 				for memb in list(self.last_wrote):
@@ -2944,7 +2944,7 @@ class ShadowClient(discord.Client):
 				await message.channel.send('Arrêtez de vouloir en savoir trop.')
 				self.nsa = True
 				self.nsa_user = message.author
-			else:
+			elif message.author == self.nsa_user:
 				await message.channel.send('Voilà, vous êtes plus raisonnable.')
 				self.nsa = False
 				self.nsa_user = None
