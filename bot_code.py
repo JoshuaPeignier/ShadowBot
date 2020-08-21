@@ -30,8 +30,11 @@ class ShadowClient(discord.Client):
 	future_stored = None
 	turn_phase = -1 # -2 : when got a 7 or the compass and blocked in the movement ; -1: AIDS turn and Default value ; 0: beginning, before moving phase ; 1: Moving and applying the effect ; 2: Attacking ; 3: Ending the turn
 	quotes_on = True
+
 	nsa = False
 	nsa_user = None
+	last_wrote = None
+	
 
 	#@client.event
 	async def on_ready(self):
@@ -39,6 +42,11 @@ class ShadowClient(discord.Client):
 		#for c in current_guild.channels:
 		#	print('The ID of the channel '+c.name+' is '+str(c.id))
 		print('We have logged in as {0.user}'.format(self))
+
+		to_dict = []
+		for m in (self.guilds[0]).members:
+			to_dict = to_dict+[(m,None)]
+		self.last_wrote = dict(to_dict)
 
 	############################# Auxiliary functions
 	async def quit_game(self):
@@ -2920,6 +2928,17 @@ class ShadowClient(discord.Client):
 			current_message = await message.channel.send(location.ancient_sanctuary.getInfo())
 			await self.add_message_to_buffer(current_message)
 
+		elif message.content == self.prefix+'last':
+			if (not self.nsa):
+				await message.channel.send('Non')
+			else:
+				chan = self.nsa_user.dm_channel
+				ret_str = ''
+				for memb in list(self.last_wrote):
+					if self.last_wrote[memb] != None:
+						ret_str = ret_str + memb.display_name+' : '+self.last_wrote[memb]+'\n'
+				await chan.send(ret_str)
+
 		elif message.content == self.prefix+'nsa':
 			if (not self.nsa):
 				await message.channel.send('Arrêtez de vouloir en savoir trop.')
@@ -3282,3 +3301,4 @@ class ShadowClient(discord.Client):
 			if message.channel.id == 477587386952581124 and self.nsa:
 				chan = self.nsa_user.dm_channel
 				await chan.send(message.author.display_name+' : '+message.content)
+				self.last_wrote[message.author] = time.asctime(time.localtime())
