@@ -29,7 +29,7 @@ class ShadowClient(discord.Client):
 	future_stored = None
 	turn_phase = -1 # -2 : when got a 7 or the compass and blocked in the movement ; -1: AIDS turn and Default value ; 0: beginning, before moving phase ; 1: Moving and applying the effect ; 2: Attacking ; 3: Ending the turn
 	quotes_on = True
-	version = 1 # 0 : vanilla ; 1 : Despair
+	version = 1 # 0 : vanilla ; 1 : 2020
 	nsa = False
 	nsa_user = None
 
@@ -69,7 +69,7 @@ class ShadowClient(discord.Client):
 		if self.version == 0:
 			await self.main_channel.send('**Version : vanilla**')
 		elif self.version == 1:
-			await self.main_channel.send('**Version : Despair**')
+			await self.main_channel.send('**Version : 2020**')
 		await self.main_channel.send('**La partie va commencer dans**')
 		await self.count([self.main_channel],5)
 		await self.main_channel.send('**La partie commence maintenant !**')
@@ -2426,7 +2426,7 @@ class ShadowClient(discord.Client):
 					await self.last_choice_message.delete()
 					self.last_choice_message = None
 					self.game.setSleepTime(j,2)
-					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' endort **'+self.game.getName(j)+'** '+str(self.game.getEmoji(j))+' pour **2** tours. Si '+self.game.getName(j)+' '+str(self.game.getEmoji(j))+' subit au moins 2 Blessures en une fois, l\'effet prendra fin. '+self.game.getName(j)+' '+str(self.game.getEmoji(j))+' subira 4 Blessures en se réveillant si les 2 tours passent et que '+self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' est encore en vie.')
+					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' endort **'+self.game.getName(j)+'** '+str(self.game.getEmoji(j))+' pour **2** tours. Si '+self.game.getName(j)+' '+str(self.game.getEmoji(j))+' subit au moins 2 Blessures en une fois, l\'effet prendra fin et '+self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' se soignera 3 Blessures.')
 					await self.add_message_to_buffer(current_message)
 					self.game.consumeAbility(self.game.turn_of)
 					await self.turn_post()
@@ -2698,14 +2698,7 @@ class ShadowClient(discord.Client):
 				if (self.game.getSleepTime(self.game.turn_of) == 0):
 					current_message = await self.main_channel.send(self.game.getName(self.game.turn_of)+' '+str(self.game.getEmoji(self.game.turn_of))+' **se réveille**.\n')
 					await self.add_message_to_buffer(current_message)
-					if self.game.isAlive(self.game.varimathras_id):
-						ret_str = self.game.damage(self.game.varimathras_id,self.game.turn_of,4,18,self.quotes_on)
-						if ret_str != '':
-							current_message = await self.main_channel.send(ret_str)
-							await self.add_message_to_buffer(current_message)
-						await self.pillage_victory_and_deaths(self.next_turn)
-					else:
-						await self.next_turn()
+					await self.next_turn()
 				else:
 					await self.next_turn()
 			else:
@@ -2845,7 +2838,7 @@ class ShadowClient(discord.Client):
 			if self.version == 0:
 				ret_str = 'Hunters :blue_circle: : Ellen, Emi, Franklin, Fu-Ka, Georges, Gregor\n'+'Shadows :red_circle: : Métamorphe, Momie, Liche, Loup-Garou, Valkyrie, Vampire\n'+'Neutres :yellow_circle: : Allie, Agnès, Bob, Catherine, Daniel\n'
 			elif self.version == 1:
-				ret_str = 'Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Lothaire, Marth\n'+'Shadows :red_circle: : Charles, Ganondorf, Majora, Métamorphe, Mograine, Momie, Liche, Loup-Garou, Valkyrie, Vampire, Varimathras\n'+'Neutres :yellow_circle: : Allie, Agnès/Angus, Bob/Cartouche, Bryan, Catherine, Daniel, Despair, Neo\n'
+				ret_str = 'Hunters :blue_circle: : Ellen, Emi, Erik, Franklin, Fu-Ka, Gabrielle, Georges, Gregor, Link, Marth\n'+'Shadows :red_circle: : Charles, Ganondorf, Majora, Métamorphe, Mograine, Momie, Liche, Loup-Garou, Valkyrie, Vampire, Varimathras\n'+'Neutres :yellow_circle: : Allie, Agnès/Angus, Bob/Cartouche, Bryan, Catherine, Daniel, Despair, Neo\n'
 			current_message = await message.channel.send(ret_str)
 			await self.add_message_to_buffer(message)
 			await self.add_message_to_buffer(current_message)
@@ -2914,6 +2907,7 @@ class ShadowClient(discord.Client):
 					+'**'+self.prefix+'charlist** : Affiche la liste de tous les personnages disponibles dans le jeu.\n'
 					+'**'+self.prefix+'item** *nom_objet* : donne la description de l\'équipement souhaité.\n'
 					+'**'+self.prefix+'locations**: donne les effets du lieu souhaité.\n'
+					+'**'+self.prefix+'new**: donne le dernier patch-note.\n'
 					+'**'+self.prefix+'version** : donne la version du jeu actuellement utilisée.\n'
 					+'\n*Informations sur une partie* (utilisables partout, avant ou pendant une partie, même en privé avec le bot)\n'
 					+'**'+self.prefix+'compo** : affiche le nombre de personnages de chaque couleur pour le nombre de joueurs actuellement connectés.\n'
@@ -2922,7 +2916,7 @@ class ShadowClient(discord.Client):
 					+'**'+self.prefix+'intro** : présente le bot.\n'
 					+'**'+self.prefix+'setSHprefix** *caractère* : modifie le préfixe des commandes par le caractère indiqué (! par défaut).\n'
 					+'**'+self.prefix+'set quotes** on/off : active/désactive les citations en jeu.\n'
-					+'**'+self.prefix+'set version** *nom_version* : change la version du jeu pour celle spécifiée (*vanilla*, *Despair*).\n'
+					+'**'+self.prefix+'set version** *nom_version* : change la version du jeu pour celle spécifiée (*vanilla*, *2020*).\n'
 					+'**'+self.prefix+'vote** *question* : organise un référendum pour collecter les avis sur la question spécifiée.\n'
 					)
 			await self.add_message_to_buffer(message)
@@ -2973,15 +2967,19 @@ class ShadowClient(discord.Client):
 			current_message = await message.channel.send(location.ancient_sanctuary.getInfo())
 			await self.add_message_to_buffer(current_message)
 
-		elif message.content == self.prefix+'nsa':
-			if (not self.nsa):
-				await message.channel.send('Arrêtez de vouloir en savoir trop.')
-				self.nsa = True
-				self.nsa_user = message.author
-			else:
-				await message.channel.send('Voilà, vous êtes plus raisonnable.')
-				self.nsa = False
-				self.nsa_user = None
+		# Someones wants to know everything about a location
+		elif message.content == self.prefix+'new':
+			await self.add_message_to_buffer(message)
+			current_message = await message.channel.send(
+					"**Patch note 2.0.0** (nouveaux personnages et nouvelles fonctionnalités)\n\n
+					+"*Personnages*\n"
+					+"- Allie a été retravaillée. Elle doit désormais être en vie sans être révélée pour gagner. Elle n'a plus de pouvoir, mais une contrainte qui l'oblige à mentir à toutes les cartes visions qu'elle reçoit.\n"
+					+"- Despair a été ajouté. Il s'agit d'un neutre à 13 PV qui doit être le dernier personnage en vie pour gagner. S'il est vivant et révélé, les Hunters et les Shadows ne peuvent pas gagner (la victoire d'un autre neutre met par contre toujours fin à la partie). Son pouvoir lui permet d'attaquer à chaque tour tous les autres joueurs encore vivants.\n"
+					+"- Le pouvoir de Varimathras est ajusté, de \"si la cible se réveille sans avoir pris de dégâts, elle subit 4 Blessures\" à \"si quelqu'un parvient à réveiller la cible en lui infligeant des dégâts, Varimathras se soigne de 3 Blessures\".\n\n"
+					+"*Fonctionnalités*\n"
+					+"- Il est maintenant possible de revenir à une ancienne version du jeu grâce à la commande **!set version**. De plus, la nouvelle commande **!version** permet de savoir quelle version vous utilisez actuellement. 2 versions du jeu sont implémentées pour l'instant : *vanilla* (jeu de base trouvable en boutique + extension officielle, moins Bryan, Charles et David) et *2020* (la version actuelle).\n"
+					+"- Une commande **!vote** a été ajoutée, qui permet d'organiser un référendum (en dehors d'une partie) et de permettre aux joueurs de voter. Ceci n'a aucune incidence sur le fonctionnement du bot, il s'agit purement de garder trace des questions qui ont été posées et de compter les votes, en vue de prévoir les prochaines modifications.)\n")
+			await self.add_message_to_buffer(current_message)
 
 		# Someones wants to see the order of the players
 		elif message.content == self.prefix+'order':
@@ -3286,14 +3284,14 @@ class ShadowClient(discord.Client):
 			elif message.content == self.prefix+'set version':
 				await message.channel.send('Voici les possibilités :\n'
 					+'**'+self.prefix+'set version** *vanilla* : jeu de base et l\'unique extension officielle (moins quelques personnages).\n'
-					+'**'+self.prefix+'set version** *Despair* : version 2.0\n')
+					+'**'+self.prefix+'set version** *2020* : version 2.0\n')
 			elif message.content == self.prefix+'set version vanilla':
 				self.version = 0
 				await message.add_reaction('\U0001F197')
 				character_list.update_version(0)
 				light.update_version(0)
 				darkness.update_version(0)
-			elif message.content == self.prefix+'set version Despair':
+			elif message.content == self.prefix+'set version 2020':
 				self.version = 1
 				await message.add_reaction('\U0001F197')
 				character_list.update_version(1)
@@ -3361,7 +3359,7 @@ class ShadowClient(discord.Client):
 				await self.add_message_to_buffer(message)
 				await self.add_message_to_buffer(current_message)
 			elif self.version == 1:
-				current_message = quit_message = await message.channel.send('Version actuelle : Despair.')
+				current_message = quit_message = await message.channel.send('Version actuelle : 2020.')
 				await self.add_message_to_buffer(message)
 				await self.add_message_to_buffer(current_message)
 
@@ -3384,6 +3382,5 @@ class ShadowClient(discord.Client):
 				await message.delete()
 			elif message.channel == self.main_channel:
 				await self.add_message_to_buffer(message)
-			if message.channel.id == 477587386952581124 and self.nsa:
-				chan = self.nsa_user.dm_channel
-				await chan.send(message.author.display_name+' : '+message.content)
+			if message.channel.id == 477587386952581124:
+				print('lol\n')

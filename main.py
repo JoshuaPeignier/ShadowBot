@@ -66,7 +66,7 @@ class Game:
 	last_drawn = 0 # 0 for nothing or for vision ; 1 for light ; 2 for darkness
 	future_after_pillage = None
 	waiting_for_pillage = []
-	version = None # 0 for vanilla ; 1 for Despair
+	version = None # 0 for vanilla ; 1 for 2020
 
 	## Initialisation of the game
 	def __init__(self,l,ver):
@@ -1742,6 +1742,8 @@ class Game:
 		if self.isAlive(pid2) and self.getSleepTime(pid2) > 0 and new_HP > (original_HP+1):
 			self.setSleepTime(pid2,0)
 			temp = temp+self.getName(pid2)+' '+str(self.getEmoji(pid2))+' **se réveille**.'
+			if self.isAlive(self.varimathras_id):
+				self.heal(self.varimathras_id,self.varimathras_id,3,8)
 
 		if new_HP == original_HP and quotes_on and self.isAlive(pid2) and source != 11 and source != 14 and source != 16:
 			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_missed()

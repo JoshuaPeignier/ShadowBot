@@ -18,7 +18,7 @@ werewolf = characters.Character("Loup-Garou",14,"Shadow",":red_circle:","Tous le
 lich = characters.Character("Liche",14,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Nécromancie (Activable, Utilisation unique)* | A la fin de votre tour, rejouez autant de fois qu'il y a de personnages morts.",True,True)
 vampire = characters.Character("Vampire",13,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Morsure (Passif)* | Si vous attaquez un joueur et lui infligez des Blessures, soignez une de vos Blessures.",False,True)
 valkyrie = characters.Character("Valkyrie",13,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Chant de Guerre (Passif)* | Lorsque vous attaquez, lancez uniquement le dé 4 pour déterminer le montant de dégâts infligés. Par rapport à un jet normal, cela vous empêche de faire 0 et augmente vos chances de faire 3 ou 4.",False,True)
-varimathras = characters.Character("Varimathras",13,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Sommeil (Activable, Utilisation unique)* | A la fin de votre tour, choisissez un joueur. Celui-ci passe s'endort ses deux prochains tours. S'il subit au moins 2 Blessures en une fois, l'effet s'interrompt. Si le joueur passe son deuxième tour et que vous êtes vivant, il subit 4 Blessures.",True,True)
+varimathras = characters.Character("Varimathras",13,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Sommeil (Activable, Utilisation unique)* | A la fin de votre tour, choisissez un joueur. Celui-ci passe s'endort ses deux prochains tours. S'il subit au moins 2 Blessures en une fois, l'effet s'interrompt et vous êtes soigné de 3 Blessures.",True,True)
 metamorph = characters.Character("Métamorphe",11,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Imitation* | Lorsqu'on vous donne une carte vision, vous pouvez (sans avoir à révéler votre carte de Personnage) choisir de mentir ou de dire la vérité.",False,False)
 mummy = characters.Character("Momie",11,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Voile Mortel (Conditionné)* | Au début de votre tour, vous pouvez infliger 3 Blessures à un joueur de votre choix situé sur la Porte de l'Outremonde.",False,True)
 mograine = characters.Character("Mograine",14,"Shadow",":red_circle:","Tous les personnages Hunters sont morts.","*Enchaînement (Conditionné)* | Lorsque vous attaquez, vous pouvez choisir deux cibles et faire un seul jet. La deuxième cible désignée subit la moitié des dégâts de l'attaque.",False,True)
@@ -73,7 +73,7 @@ char_dictionary = {
 "Despair": despair
 }
 
-hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
+hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,marth,link]
 #hunter_list=[link,link]
 
 shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
@@ -158,6 +158,6 @@ def update_version(nb):
 		allie.uniqueUse = False
 		allie.choice = False
 
-		hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,lothaire,marth,link]
+		hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,marth,link]
 		shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
 		neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan,despair]
