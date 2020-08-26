@@ -39,6 +39,9 @@ class ShadowClient(discord.Client):
 		#for c in current_guild.channels:
 		#	print('The ID of the channel '+c.name+' is '+str(c.id))
 		print('We have logged in as {0.user}'.format(self))
+		character_list.update_version(1)
+		light.update_version(1)
+		darkness.update_version(1)
 
 	############################# Auxiliary functions
 	async def quit_game(self):
