@@ -2971,7 +2971,7 @@ class ShadowClient(discord.Client):
 		elif message.content == self.prefix+'new':
 			await self.add_message_to_buffer(message)
 			current_message = await message.channel.send(
-					"**Patch note 2.0.0** (nouveaux personnages et nouvelles fonctionnalités)\n\n
+					"**Patch note 2.0.0** (nouveaux personnages et nouvelles fonctionnalités)\n\n"
 					+"*Personnages*\n"
 					+"- Allie a été retravaillée. Elle doit désormais être en vie sans être révélée pour gagner. Elle n'a plus de pouvoir, mais une contrainte qui l'oblige à mentir à toutes les cartes visions qu'elle reçoit.\n"
 					+"- Despair a été ajouté. Il s'agit d'un neutre à 13 PV qui doit être le dernier personnage en vie pour gagner. S'il est vivant et révélé, les Hunters et les Shadows ne peuvent pas gagner (la victoire d'un autre neutre met par contre toujours fin à la partie). Son pouvoir lui permet d'attaquer à chaque tour tous les autres joueurs encore vivants.\n"
