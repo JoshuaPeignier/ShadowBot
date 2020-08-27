@@ -1430,7 +1430,7 @@ class ShadowClient(discord.Client):
 	async def on_reaction_add(self,reaction,user):
 
 		# When someone reacts to the joining message
-		if(prelaunch.creator != None) and  reaction.message.content.startswith(prelaunch.creator.mention+' crée une partie de Shadow Hunters.'):
+		if(prelaunch.creator != None) and  reaction.message.content.startswith(prelaunch.creator.mention+' crée une partie de **Shadow Hunters: Ultimate Cards Expansion**.'):
 			# Tries to add the user when computing the condition. If already present or emoji already used, sends an error
 			nb_players_before = prelaunch.nb_players()
 			try:
@@ -2712,7 +2712,7 @@ class ShadowClient(discord.Client):
 	async def on_reaction_remove(self,reaction,user):
 
 		# When someone reacts to the joining message
-		if (prelaunch.creator != None) and reaction.message.content.startswith(prelaunch.creator.mention+' crée une partie de Shadow Hunters.'):
+		if (prelaunch.creator != None) and reaction.message.content.startswith(prelaunch.creator.mention+' crée une partie de **Shadow Hunters: Ultimate Cards Expansion**.'):
 			# Tries to delete the user when computing the condition. If not present, nothing happens.
 			try:
 				prelaunch.delete(user,reaction.emoji)
@@ -2873,7 +2873,7 @@ class ShadowClient(discord.Client):
 				prelaunch.create(message.author)
 				self.main_channel = message.channel
 				await self.delete_buffer()
-				await message.channel.send(message.author.mention+' crée une partie de Shadow Hunters.\n'
+				await message.channel.send(message.author.mention+' crée une partie de **Shadow Hunters: Ultimate Cards Expansion**.\n'
 				+'**Rejoignez la partie en ajoutant un emoji en réaction à ce message** ; il servira à vous identifier.\n'
 				+'Vous pouvez **changer la version du jeu** avec **'+self.prefix+'set version**.\n'
 				+'Une fois prêts, **'+message.author.display_name+' doit taper '+self.prefix+'start pour démarrer**.\n\n')
@@ -2932,7 +2932,7 @@ class ShadowClient(discord.Client):
 			current_message = await message.channel.send(
 				'Bonjour à tous. Je suis '
 				+self.user.mention
-				+', et je suis là pour vous servir d\'interface pour jouer à Shadow Hunters. N\'hésitez pas à faire appel à moi.\nTapez **'+self.prefix+'help** pour afficher la liste de toutes les commandes disponibles.\n\nSi vous remarquez des bugs, des comportements anormaux, si vous avez des questions, si vous avez des suggestions d\'amélioration (sur le jeu ou sur mon ergonomie), n\'hésitez pas à en faire part à mon papa, Bronyx, qui se chargera de me mettre à jour.')
+				+', et je suis là pour vous servir d\'interface pour jouer à **Shadow Hunters: Ultimate Cards Expansion**. N\'hésitez pas à faire appel à moi.\nTapez **'+self.prefix+'help** pour afficher la liste de toutes les commandes disponibles.\n\nSi vous remarquez des bugs, des comportements anormaux, si vous avez des questions, si vous avez des suggestions d\'amélioration (sur le jeu ou sur mon ergonomie), n\'hésitez pas à en faire part à mon papa, Bronyx, qui se chargera de me mettre à jour.')
 			await self.add_message_to_buffer(message)
 			await self.add_message_to_buffer(current_message)
 
@@ -3247,7 +3247,7 @@ class ShadowClient(discord.Client):
 
 		# Someone wants to know the rules
 		elif message.content == self.prefix+'rules':
-			current_message = await message.channel.send('Shadow Hunters est un jeu qui se joue au tour par tour sur un plateau. Deux camps s\'affrontent : les Hunters :blue_circle: et les Shadows :red_circle: ; le but de chacun de ces deux camps est d\'exterminer l\'autre. Il existe en plus des personnages Neutres :yellow_circle: qui ont chacun leurs propres conditions de victoire.\n\n'
+			current_message = await message.channel.send('**Shadow Hunters: Ultimate Cards Expansion** est un jeu qui se joue au tour par tour sur un plateau. Deux camps s\'affrontent : les Hunters :blue_circle: et les Shadows :red_circle: ; le but de chacun de ces deux camps est d\'exterminer l\'autre. Il existe en plus des personnages Neutres :yellow_circle: qui ont chacun leurs propres conditions de victoire.\n\n'
 				+'Chaque tour se divise en plusieurs phases : un joueur lance les dés pour se déplacer, applique l\'effet de la zone où il se trouve (**'+self.prefix+'locations**), puis éventuellement attaquer un joueur parmi ceux qui se trouvent sur le même *secteur* (paire de lieux) que lui.\n\n'
 				+'Beaucoup d\'actions vont infliger des dégâts aux personnages du jeu. Lorsqu\'un personnage n\'a plus de points de vie, il décède. Au cours de la partie, les joueurs peuvent décider de révéler leurs personnnages (**'+self.prefix+'reveal**), ce qui leur permet d\'activer leur pouvoir (**'+self.prefix+'abilities** et **'+self.prefix+'char** pour plus d\'informations).\n\n'
 				+'Dès qu\'un personnage remplit sa condition de victoire, la partie s\'arrête.')
