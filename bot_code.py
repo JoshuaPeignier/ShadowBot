@@ -115,15 +115,14 @@ class ShadowClient(discord.Client):
 		self.erasing_messages = False
 
 	async def victory_message(self):
-		await self.update()
 		await self.main_channel.send('\_\_\_\_\_\_\_\_\_\_')
 		await self.main_channel.send('**GAME !!**')
-		await self.update()
 		self.game.game_ended = True
 		for i in range(0,self.game.nb_players()):
 			if self.game.didPlayerWin(i):
 				await self.main_channel.send('> '+self.game.getName(i)+' '+str(self.game.getEmoji(i))+' ('+self.game.playerlist[i].getCharNameColor()+') gagne.')
 		self.game.reveal_all()
+		await self.update()
 		await self.main_channel.send('\_\_\_\_\_\_\_\_\_\_')
 		await self.quit_game()
 
