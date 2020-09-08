@@ -1739,11 +1739,12 @@ class Game:
 
 		# Awakening from the slumber
 		new_HP = self.playerlist[pid2].wounds
-		if self.isAlive(pid2) and self.getSleepTime(pid2) > 0 and new_HP > (original_HP+1):
+		if self.getSleepTime(pid2) > 0 and new_HP > (original_HP+1):
 			self.setSleepTime(pid2,0)
-			temp = temp+self.getName(pid2)+' '+str(self.getEmoji(pid2))+' **se réveille**.'
+			if self.isAlive(pid2):
+				temp = temp+self.getName(pid2)+' '+str(self.getEmoji(pid2))+' **se réveille**.'
 			if self.isAlive(self.varimathras_id):
-				self.heal(self.varimathras_id,self.varimathras_id,3,8)
+				temp = temp + self.heal(self.varimathras_id,self.varimathras_id,3,8)
 
 		if new_HP == original_HP and quotes_on and self.isAlive(pid2) and source != 11 and source != 14 and source != 16:
 			ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2)) + ' : ' + quotes.attack_missed()
