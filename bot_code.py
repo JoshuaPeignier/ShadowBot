@@ -1969,8 +1969,6 @@ class ShadowClient(discord.Client):
 				await self.last_choice_message.delete()
 				self.last_choice_message = None
 				self.game.counterattack_available = False
-				await self.last_choice_message.delete()
-				self.last_choice_message = None
 				current_message = await self.main_channel.send(self.game.getName(self.game.werewolf_id)+' '+str(self.game.getEmoji(self.game.werewolf_id))+' choisit de **ne pas contre-attaquer**.')
 				await self.add_message_to_buffer(current_message)
 				await self.turn_post()
