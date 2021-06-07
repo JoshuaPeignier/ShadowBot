@@ -13,7 +13,7 @@ def add(player,emoji):
 	global game_joined
 	if game_launched:
 		raise exceptions.GameRunning
-	if emoji == '\u27A1' or emoji == '\u274C' or emoji == '\U0001F525' or emoji == '\u2611' or emoji == '\U0001F197' or emoji == '\U0001F6AB' or emoji == '\U0001F3B2' or emoji == '\U0001FA78' or emoji == '\U0001F5E1' or emoji == '\U0001F7E9' or emoji == '\U0001F7EA' or emoji == '\u2B1C' or emoji == '\u2B1B' or emoji == '\U0001F7EB' or emoji == '\U0001F7E7' or emoji == '\U0001F3F9' or emoji == '\U0001FA93' or emoji == '\U0001F52B' or emoji == '\U0001F5E1' or emoji == '\u2694' or emoji == '\U0001F528' or emoji == '\U0001F9AF' or emoji == '\U0001F9BA' or emoji == '\U0001F9ED' or emoji == '\U0001F48D' or emoji == '\u271D' or emoji == '\U0001F4FF' or emoji == '\U0001F4CD' or emoji == '\U0001F5FF' or emoji == '\U0001F6E1' or emoji == '\U0001F489' or emoji == '\U0001F6D1':
+	if emoji == '\u27A1' or emoji == '\u274C' or emoji == '\U0001F525' or emoji == '\u2611' or emoji == '\U0001F197' or emoji == '\U0001F6AB' or emoji == '\U0001F3B2' or emoji == '\U0001FA78' or emoji == '\U0001F5E1' or emoji == '\U0001F7E9' or emoji == '\U0001F7EA' or emoji == '\u2B1C' or emoji == '\u2B1B' or emoji == '\U0001F7EB' or emoji == '\U0001F7E7' or emoji == '\U0001F3F9' or emoji == '\U0001FA93' or emoji == '\U0001F52B' or emoji == '\U0001F5E1' or emoji == '\u2694' or emoji == '\U0001F528' or emoji == '\U0001F9AF' or emoji == '\U0001F9BA' or emoji == '\U0001F9ED' or emoji == '\U0001F48D' or emoji == '\u271D' or emoji == '\U0001F4FF' or emoji == '\U0001F4CD' or emoji == '\U0001F5FF' or emoji == '\U0001F6E1' or emoji == '\U0001F489' or emoji == '\U0001F6D1' or emoji == '\u2620':
 		raise exceptions.EmojiReserved
 	for i in range(0,nb_players()):
 		# Comment this block to allow a same player to connect multiple times
@@ -24,6 +24,7 @@ def add(player,emoji):
 	if(nb_players() >= 8):
 		raise exceptions.GameFull
 	game_joined=game_joined+[(player,emoji)]
+	print(player.name+' joined with emoji '+str(emoji)+'.')
 
 def delete(player,emoji):
 	global game_joined
@@ -35,6 +36,10 @@ def delete(player,emoji):
 			game_joined=game_joined[0:i]+game_joined[i+1:nb_players()]
 			found = True
 			break
+		elif (game_joined[i][0]==player):
+			print('Emoji does not match with player '+str(i))
+		elif (game_joined[i][1]==emoji):
+			print('Name does not match with player '+str(i))
 	if not found:
 		raise exceptions.PlayerNotFound
 

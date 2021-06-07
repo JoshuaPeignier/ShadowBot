@@ -38,3 +38,11 @@ cross_card = LightCard('Crucifix','le','équipement')
 light_pool = [holy_water_card,holy_water_card,mirror_card,divine_lightning_card,chocolate_bar_card,lay_on_hands_card,first_aid_card,benediction_card,guardian_angel_card,new_turn_card,hookshot_card,fraud_repression_card,spear_card,robe_card,compass_card,ring_card,amulet_card,cross_card,pin_card]
 
 #light_pool = [spear_card]
+
+def update_version(nb):
+	global light_pool
+	if nb == 0:
+		light_pool = [holy_water_card,holy_water_card,mirror_card,divine_lightning_card,chocolate_bar_card,lay_on_hands_card,first_aid_card,benediction_card,guardian_angel_card,new_turn_card,spear_card,robe_card,compass_card,amulet_card,cross_card,pin_card]
+	elif nb == 1:
+		light_pool = [holy_water_card,holy_water_card,mirror_card,divine_lightning_card,chocolate_bar_card,lay_on_hands_card,first_aid_card,benediction_card,guardian_angel_card,new_turn_card,hookshot_card,fraud_repression_card,spear_card,robe_card,compass_card,ring_card,amulet_card,cross_card,pin_card]
+
