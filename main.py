@@ -529,7 +529,7 @@ class Game:
 				return True
 		return False
 
-	def postDeathEffects(self):
+	def postDeathEffects(self,quotes_on):
 		ret_str = ''
 		if (self.just_died != []):
 			self.first_blood = True
@@ -1502,6 +1502,7 @@ class Game:
 	# 16 Werewolf's counterattack blocked by Lothaire
 	# 17 Link damaging himself to move
 	# 18 Slumber ends with damage
+	# 19 !kill command
 	def damage(self,pid1,pid2,value,source,quotes_on):
 		ret_string = ''
 		temp = ''
@@ -1736,6 +1737,11 @@ class Game:
 			else:
 				ret_string = ret_string + self.getName(pid2)+' '+str(self.getEmoji(pid2))+' subit **'+str(value)+'** Blessures.\n' 
 				temp = self.playerlist[pid2].damage(value)
+
+		# command !kill
+		if source == 19:
+			ret_string = ret_string + self.getName(pid1)+' '+str(self.getEmoji(pid1))+' frappe **'+self.getName(pid2)+'** '+str(self.getEmoji(pid2))+' de son jugement divin et lui inflige **255** Blessures..\n' 
+			temp = self.playerlist[pid2].damage(255)
 
 		# Awakening from the slumber
 		new_HP = self.playerlist[pid2].wounds

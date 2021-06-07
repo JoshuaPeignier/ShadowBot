@@ -74,13 +74,10 @@ char_dictionary = {
 }
 
 hunter_list=[gabrielle,gregor,georges,franklin,fuka,emi,ellen,erik,marth,link]
-#hunter_list=[link,link]
 
 shadow_list=[werewolf,lich,vampire,valkyrie,varimathras,metamorph,mummy,mograine,ganondorf,majora,charles]
-#shadow_list=[ganondorf,ganondorf]
 
 neutral_list=[daniel,catherine,allie,agnes,neo,bob,bryan]
-#neutral_list=[cartouche,cartouche]
 
 def update_version(nb):
 	global gabrielle

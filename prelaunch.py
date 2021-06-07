@@ -24,6 +24,7 @@ def add(player,emoji):
 	if(nb_players() >= 8):
 		raise exceptions.GameFull
 	game_joined=game_joined+[(player,emoji)]
+	print(player.name+' joined with emoji '+str(emoji)+'.')
 
 def delete(player,emoji):
 	global game_joined
@@ -35,6 +36,10 @@ def delete(player,emoji):
 			game_joined=game_joined[0:i]+game_joined[i+1:nb_players()]
 			found = True
 			break
+		elif (game_joined[i][0]==player):
+			print('Emoji does not match with player '+str(i))
+		elif (game_joined[i][1]==emoji):
+			print('Name does not match with player '+str(i))
 	if not found:
 		raise exceptions.PlayerNotFound
 

@@ -38,7 +38,7 @@ class ShadowClient(discord.Client):
 		#current_guild = self.guilds[0]
 		#for c in current_guild.channels:
 		#	print('The ID of the channel '+c.name+' is '+str(c.id))
-		print('We have logged in as {0.user}'.format(self))
+		print('We have logged in as {0.user}'.format(self)+' Intents.reactions() is'+str(self.intents.reactions))
 		await self.change_presence(activity=discord.Game(name="SH:UCE"))
 		character_list.update_version(1)
 		light.update_version(1)
@@ -134,7 +134,7 @@ class ShadowClient(discord.Client):
 		if self.game.didSomeoneWin():
 			await self.victory_message()
 		else:
-			ret_str = self.game.postDeathEffects()
+			ret_str = self.game.postDeathEffects(self.quotes_on)
 			if ret_str != '':
 				ret_message = await self.main_channel.send(ret_str)
 				await self.add_message_to_buffer(ret_message)
@@ -1383,6 +1383,8 @@ class ShadowClient(discord.Client):
 		card = self.game.draw_one_vision()
 		self.game.discard_vision(card)
 		self.game.current_vision = card
+		self.game.last_drawn = 0
+
 
 		pChan = self.game.getChannel(self.game.turn_of)
 		await pChan.send('Voici la vision que tu obtiens :\n'+card.initiatorText())
@@ -2708,12 +2710,14 @@ class ShadowClient(discord.Client):
 
 	#@client.event
 	async def on_reaction_remove(self,reaction,user):
-
+		print('Someone removes a reaction')
 		# When someone reacts to the joining message
 		if (prelaunch.creator != None) and reaction.message.content.startswith(prelaunch.creator.mention+' crée une partie de **Shadow Hunters: Ultimate Cards Expansion**.'):
+			print('Trying to remove a reaction on creation message.')
 			# Tries to delete the user when computing the condition. If not present, nothing happens.
 			try:
 				prelaunch.delete(user,reaction.emoji)
+				print(user.name+' successfully disconnected from the game.')
 				await reaction.message.channel.send(user.mention+' '+str(reaction.emoji)+' a quitté la partie.')
 			except exceptions.PlayerNotFound:
 				print('Exception caught: '+ user.name + ' tried to disconnect, but was not present in the game.')
@@ -2741,6 +2745,7 @@ class ShadowClient(discord.Client):
 		elif reaction.message.content.startswith('**Choisis 2 joueurs** à attaquer (le deuxième ne subira que la moitié des dégâts)')  and (user == self.game.getUser(self.game.turn_of)) and (self.turn_phase == 2):
 			if self.game.mograine_target_2 == None and reaction.emoji != '\U0001F6D1':
 				self.game.mograine_target_1 = None
+
 
 		# When Erik uses his power
 		elif reaction.message.content.startswith('Tu peux choisir une des actions suivantes')  and (user == self.game.getUser(self.game.turn_of)) and (self.turn_phase == 0):
@@ -2899,7 +2904,7 @@ class ShadowClient(discord.Client):
 					+'**'+self.prefix+'quit** : efface la partie en cours (qu\'elle soit juste créée ou lancée).\n'
 					+'\n*Actions en jeu*\n'
 					+'**'+self.prefix+'pow** : utilise votre pouvoir, s\'il est *activable* et si vous le faites au bon moment (cf **'+self.prefix+'abilities**).\n'
-					+'**'+self.prefix+'reveal** : révélez votre identité (utilisable n\'importe quand).\n'
+					+'**'+self.prefix+'reveal** ou **'+self.prefix+'revelo** : révélez votre identité (utilisable n\'importe quand).\n'
 					+'\n*Règles* (utilisables partout, avant ou pendant une partie, même en privé avec le bot)\n'
 					+'**'+self.prefix+'abilities**: explique les différents types de pouvoir et les occasions de les utiliser.\n'
 					+'**'+self.prefix+'rules**: donne une description rapide des règles.\n'
@@ -2951,6 +2956,26 @@ class ShadowClient(discord.Client):
 					current_message = await message.channel.send(res.getInfo())
 					await self.add_message_to_buffer(message)
 					await self.add_message_to_buffer(current_message)
+
+		# Someones wants to kill another player in debug mode
+		elif message.content.startswith(self.prefix+'kill'):
+			# If no game is created, then error
+			if self.debug and (len(message.content)==len(self.prefix)+6) and (self.turn_phase == 0 or self.turn_phase == 3):
+				await self.last_choice_message.delete()
+				self.last_choice_message = None
+				id_name = message.content[-1]
+				id = int(id_name)
+				damage_str = self.game.damage(self.game.turn_of,id,255,19,False)
+				current_message = await self.main_channel.send(damage_str)
+				await self.add_message_to_buffer(current_message)
+				await self.add_message_to_buffer(message)
+				if self.turn_phase == 0:
+					await self.pillage_victory_and_deaths(self.moving_pre)
+				elif self.turn_phase == 3:
+					await self.pillage_victory_and_deaths(self.turn_post)
+			else:
+				await self.add_message_to_buffer(message)
+				await message.add_reaction('\U0001F6AB')
 
 		# Someones wants to know everything about a location
 		elif message.content == self.prefix+'locations':
@@ -3179,7 +3204,7 @@ class ShadowClient(discord.Client):
 					await message.add_reaction('\U0001F6AB')
 
 		# Someones wants to reveal themselves
-		elif message.content == self.prefix+'reveal':
+		elif (message.content == self.prefix+'reveal') or (message.content == self.prefix+'revelo'):
 			# If no game is created, then error
 			if (not prelaunch.launched()):
 				await message.channel.send('Pas de partie en cours.')
@@ -3243,6 +3268,18 @@ class ShadowClient(discord.Client):
 					print('AlreadyRevealed')
 					await self.add_message_to_buffer(message)
 
+
+		# Someones wants to reveal themselves
+		elif (message.content == self.prefix+'revealall'):
+			# If no game is created, then error
+			if (not prelaunch.launched()):
+				await message.channel.send('Pas de partie en cours.')
+			elif self.debug:
+				await self.add_message_to_buffer(message)
+				self.game.reveal_all()
+				await self.update()
+
+
 		# Someone wants to know the rules
 		elif message.content == self.prefix+'rules':
 			current_message = await message.channel.send('**Shadow Hunters: Ultimate Cards Expansion** est un jeu qui se joue au tour par tour sur un plateau. Deux camps s\'affrontent : les Hunters :blue_circle: et les Shadows :red_circle: ; le but de chacun de ces deux camps est d\'exterminer l\'autre. Il existe en plus des personnages Neutres :yellow_circle: qui ont chacun leurs propres conditions de victoire.\n\n'
@@ -3299,6 +3336,18 @@ class ShadowClient(discord.Client):
 				light.update_version(1)
 				darkness.update_version(1)
 			else:
+				await message.add_reaction('\U0001F6AB')
+
+		# Someones wants to skip his turn
+		elif message.content.startswith(self.prefix+'skip'):
+			# If no game is created, then error
+			if self.debug:
+				await self.last_choice_message.delete()
+				self.last_choice_message = None
+				await self.add_message_to_buffer(message)
+				await self.turn_post()
+			else:
+				await self.add_message_to_buffer(message)
 				await message.add_reaction('\U0001F6AB')
 
 		# Someone tries to start a game
@@ -3383,5 +3432,3 @@ class ShadowClient(discord.Client):
 				await message.delete()
 			elif message.channel == self.main_channel:
 				await self.add_message_to_buffer(message)
-			if message.channel.id == 477587386952581124:
-				print('lol\n')
