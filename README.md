@@ -12,7 +12,12 @@ python3
 If your version of Python is at least 3.7.X, everything should work fine. Just in case, though, be sure to download the latest version of Python.
 
 
-Then, you need to install the Python library discord.py. A tutorial is available here: https://discordpy.readthedocs.io/en/latest/intro.html
+Then, you need to install the Python library discord.py. 
+If you have already installed python, just open a terminal and type:
+```bash
+pip3 install discord.py
+```
+More details here if necessary: https://discordpy.readthedocs.io/en/latest/intro.html
 
 # Download
 
