@@ -19,6 +19,9 @@ Then, you need to install the Python library discord.py. A tutorial is available
 The simplest way is to use the "Download ZIP" button on top of this page, and then extract it somewhere on your computer, but this means that you will have redownload manually each time there is an update.
 If you know how to use git, just clone the repository, and you should be able to update everything with a pull each time an update is available.
 
+# Keys
+
+
 # Run the bot
 
 Simpler solution: double click the bot.bat file.
@@ -30,7 +33,7 @@ python3 bot_LPDA.py
 
 If you have done everything correctly, a terminal should appear with a message saying
 ```bash
-Now connected as ShadowBot
+We have logged in as ShadowBot X.X.X#1011
 ```
 
 
