@@ -19,7 +19,16 @@ Then, you need to install the Python library discord.py. A tutorial is available
 The simplest way is to use the "Download ZIP" button on top of this page, and then extract it somewhere on your computer, but this means that you will have redownload manually each time there is an update.
 If you know how to use git, just clone the repository, and you should be able to update everything with a pull each time an update is available.
 
-# Keys
+# Token and security measures
+
+The file bot\_LPDA.py on this repository (and on the archive that you download) is incomplete: for security reasons, I removed the token associated to the account of the Discord bot.
+Just ask me for the token in private if you need ; else, it may be available in a pinned message on Discord.
+Once you have the token, open the file bot\_LPDA.py in a notepad, look for the following line:
+
+```python3
+client.run('XXXXXXXXXX')
+```
+and replace the XXXXXXXX by the token. DO NOT send or show the token to ANYONE outside our group, and DO NOT put it anywhere on the internet, besides our Discord server. If someone else gets that token, it means they have access to the account of the Discord bot. I would still be the owner of the account, but they could use it for another program which could, for example, spy on our server. That would be bad.
 
 
 # Run the bot
