@@ -24,17 +24,29 @@ More details here if necessary: https://discordpy.readthedocs.io/en/latest/intro
 The simplest way is to use the "Download ZIP" button on top of this page, and then extract it somewhere on your computer, but this means that you will have redownload manually each time there is an update.
 If you know how to use git, just clone the repository, and you should be able to update everything with a pull each time an update is available.
 
-# Token and security measures
+# Bot-account on Discord
 
-The file bot\_LPDA.py on this repository (and on the archive that you download) is incomplete: for security reasons, I removed the token associated to the account of the Discord bot.
-Just ask me for the token in private if you need ; else, it may be available in a pinned message on Discord.
-Once you have the token, open the file bot\_LPDA.py in a notepad, look for the following line:
+The code available here is a program that you will run on your PC. But this program has to be "plugged" to a bot account on Discord. Follow this tutorial to create such an account: https://discordpy.readthedocs.io/en/stable/discord.html
+
+Once it is created, you will need the "token" of your bot. It is a sort of password, that the program will use to log itself to the bot account you just created. Follow the tutorial mentioned in the link above to find it.
+
+# Use the token in the program
+
+Once you have the token, you have to insert it in the file bot\_LPDA.py. Open this file in a notepad, look for the following line:
 
 ```python3
 client.run('XXXXXXXXXX')
 ```
-and replace the XXXXXXXX by the token. DO NOT send or show the token to ANYONE outside our group, and DO NOT put it anywhere on the internet, besides our Discord server. If someone else gets that token, it means they have access to the account of the Discord bot. I would still be the owner of the account, but they could use it for another program which could, for example, spy on our server. That would be bad.
 
+and replace the XXXXXXXX by the token. DO NOT send or show your token to ANYONE outside your group of players, and DO NOT put it anywhere on the internet, besides your Discord server. If someone else gets that token, it means they have access to the account of your Discord bot. You would still be the owner of the account, but they could use it to plug another program to your bot account ; which could, for example, allow them to spy on our server. That would be bad.
+
+Once the token is inserted in the file, the program is ready to run!
+
+# Something to know before running the bot
+
+Before running the bot, you should know that it is sufficient to only have one person run it on their PC. That person runs the program using the instructions given below, the program connects to the bot account, and then everyone can play by using the commands in a Discord channel with the bot.
+
+Never try to have multiple people running the bot on the same account at the same time. If you do, you will have two instances of the program, each one running their own game. It will be playble for a while, having two games in parallel, but it will crash eventually.
 
 # Run the bot
 
@@ -47,7 +59,12 @@ python3 bot_LPDA.py
 
 If you have done everything correctly, a terminal should appear with a message saying
 ```bash
-We have logged in as ShadowBot X.X.X#1011
+We have logged in as ShadowBot X.X.X#id_of_your_bot_account
 ```
 
+# Play a game
+
+Use the !help command in the bot to get a list of all possible commands. This will include : commands to start and stop a game, commands to get information on the game, etc.
+
+Enjoy!
 
